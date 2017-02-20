@@ -1,0 +1,63 @@
+{
+  "name": "gulp-predefined-tasks",
+  "version": "1.0.0",
+  "repository": "https://github.com/zhengcan/gulp-predefined-tasks",
+  "author": {
+    "name": "Zheng Can",
+    "email": "zc3593835@gmail.com"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "gulp",
+    "watch": "gulp watch",
+    "webpack": "webpack"
+  },
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib/"
+  },
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "dependencies": {
+    "autoprefixer": "^6.7.2",
+    "babel-loader": "^6.2.10",
+    "babel-polyfill": "^6.22.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.22.0",
+    "babel-register": "^6.22.0",
+    "browser-sync": "^2.18.7",
+    "css-loader": "^0.26.1",
+    "eslint": "^3.15.0",
+    "eventsource-polyfill": "^0.9.6",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-clean-css": "^3.0.2",
+    "gulp-eslint": "^3.0.1",
+    "gulp-exec": "^2.1.3",
+    "gulp-imagemin": "^3.1.1",
+    "gulp-less": "^3.3.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-postcss": "^6.3.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-shell": "^0.5.2",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-task-listing": "^1.0.1",
+    "gulp-uglify": "^2.0.1",
+    "gulp-util": "^3.0.8",
+    "less-loader": "^2.2.3",
+    "postcss-loader": "^1.2.2",
+    "pump": "^1.0.2",
+    "react-hot-loader": "v3.0.0-beta.6",
+    "rimraf": "^2.5.4",
+    "style-loader": "^0.13.1",
+    "svg-url-loader": "^2.0.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^2.2.1",
+    "webpack-dev-middleware": "^1.10.0",
+    "webpack-dev-server": "^2.3.0",
+    "webpack-hot-middleware": "^2.16.1",
+    "webpack-stream": "^3.2.0"
+  }
+}
