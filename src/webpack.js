@@ -57,7 +57,6 @@ export default (gulp, options) => {
     }
 
     let config = loadConfig(taskName, actualOptions, createConfig);
-    console.log(config);
 
     pump([
       gulp.src(entry),
@@ -110,8 +109,8 @@ export default (gulp, options) => {
       config: webpackOptions.watchConfig || webpackOptions.devConfig || webpackOptions.config,
       devServer: webpackOptions.devServer,
     }, defaultOptions);
-    let { entry, config, devServer } = watchOptions;
-    config = loadConfig(`webpack:${type}:watch`, config, createWatchConfig);
+    let { entry, devServer } = watchOptions;
+    let config = loadConfig(`webpack:${type}:watch`, watchOptions, createWatchConfig);
 
     devServer = _.merge({
       host: '0.0.0.0',
