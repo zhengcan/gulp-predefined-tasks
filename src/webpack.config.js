@@ -14,6 +14,7 @@ const DEFAULT_OPTIONS = {
 
 function buildConfig(options) {
   let { type, srcDir, entry, outputPath, publicPath, isProd } = options;
+  let packageJson = readPackageJson();
 
   entry = helper.initEntry(entry, srcDir);
   outputPath = path.join(process.cwd(), outputPath);
@@ -29,7 +30,6 @@ function buildConfig(options) {
     if (typeof isProd === undefined) {
       isProd = process.env.NODE_ENV === 'production';
     }
-    let packageJson = readPackageJson();
     output = {
       path: outputPath,
       filename: `${packageJson.name}${isProd ? ".min" : ""}.js`,
@@ -39,10 +39,15 @@ function buildConfig(options) {
   } else {
     throw new gutil.PluginError('webpack', 'Unknown type ' + type);
   }
+
+  let hasReact = _.includes(packageJson.dependencies, 'react')
+    || _.includes(packageJson.devDependencies, 'react');
+
   return {
     entry,
     output,
     publicPath,
+    hasReact,
   };
 }
 
@@ -144,7 +149,7 @@ export function createDevConfig(options) {
   return _.merge(baseConfig, {
     plugins: _.concat(baseConfig.plugins || [], [
       new webpack.DefinePlugin({
-  			"process.env": { "NODE_ENV": JSON.stringify("no-hmr") }
+  			"process.env": { "NODE_ENV": JSON.stringify("development") }
   		}),
     ]),
   });
@@ -171,7 +176,7 @@ export function createWatchConfig(options) {
   return _.merge(baseConfig, {
     plugins: _.concat(baseConfig.plugins || [], [
       new webpack.DefinePlugin({
-  			"process.env": { "NODE_ENV": JSON.stringify("development") }
+  			"process.env": { "NODE_ENV": JSON.stringify("watch") }
   		}),
       // enable HMR globally
       new webpack.HotModuleReplacementPlugin(),

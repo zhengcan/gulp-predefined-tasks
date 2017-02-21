@@ -66,28 +66,21 @@ export default (gulp, options) => {
   };
 
   gulp.task(`webpack:${type}:dev`, (cb) => {
+    if (process.env.NODE_ENV !== 'development') {
+      gutil.log(gutil.colors.red('NODE_ENV is not "development", which may produce invalid artifacts.'));
+    }
+
     let devOptions = _.defaults({
       entry: webpackOptions.entry,
       outputPath: webpackOptions.devOutputPath || webpackOptions.outputPath,
       publicPath: webpackOptions.publicPath,
       config: webpackOptions.devConfig || webpackOptions.config,
     }, defaultOptions);
-    // runWebpack('webpack:dev', devOptions, () => {
-    //   return createDevConfig({
-    //     getEntry: () => {
-    //       return helper.initEntry(devOptions.entry, options.srcDir);
-    //     },
-    //     getOutputPath: () => {
-    //       return path.join(process.cwd(), devOptions.outputPath);
-    //     },
-    //   });
-    // }, cb);
     runWebpack(`webpack:${type}:dev`, devOptions, createDevConfig, cb);
   });
 
   gulp.task(`webpack:${type}:prod`, (cb) => {
-    let isProd = process.env.NODE_ENV === 'production';
-    if (!isProd) {
+    if (process.env.NODE_ENV !== 'production') {
       gutil.log(gutil.colors.red('NODE_ENV is not "production", which may produce invalid artifacts.'));
     }
 
@@ -102,6 +95,10 @@ export default (gulp, options) => {
   });
 
   gulp.task(`webpack:${type}:watch`, (cb) => {
+    if (process.env.NODE_ENV !== 'watch') {
+      gutil.log(gutil.colors.red('NODE_ENV is not "watch", which may produce invalid artifacts.'));
+    }
+
     let watchOptions = _.defaults({
       entry: webpackOptions.entry,
       outputPath: webpackOptions.watchOutputPath || webpackOptions.devOutputPath || webpackOptions.outputPath,
