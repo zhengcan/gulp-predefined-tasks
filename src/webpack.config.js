@@ -13,7 +13,7 @@ const DEFAULT_OPTIONS = {
 };
 
 function buildConfig(options) {
-  let { type, srcDir, entry, outputPath, publicPath, isProd } = options;
+  let { type, srcDir, entry, outputPath, publicPath, externals, isProd } = options;
   let packageJson = readPackageJson();
 
   entry = helper.initEntry(entry, srcDir);
@@ -47,6 +47,7 @@ function buildConfig(options) {
     entry,
     output,
     publicPath,
+    externals,
     hasReact,
   };
 }
@@ -60,6 +61,8 @@ function createBaseConfig(options) {
       extensions: ['.js', '.jsx', '.json', '.css', '.less'],
     },
     devtool: 'inline-source-map',
+    // devtool: 'eval-source-map',
+    externals: config.externals,
     module: {
       rules: [
         {

@@ -74,6 +74,7 @@ export default (gulp, options) => {
       entry: webpackOptions.entry,
       outputPath: webpackOptions.devOutputPath || webpackOptions.outputPath,
       publicPath: webpackOptions.publicPath,
+      externals: webpackOptions.externals,
       config: webpackOptions.devConfig || webpackOptions.config,
     }, defaultOptions);
     runWebpack(`webpack:${type}:dev`, devOptions, createDevConfig, cb);
@@ -89,6 +90,7 @@ export default (gulp, options) => {
       entry: webpackOptions.entry,
       outputPath: webpackOptions.prodOutputPath || webpackOptions.outputPath,
       publicPath: webpackOptions.publicPath,
+      externals: webpackOptions.externals,
       config: webpackOptions.prodConfig || webpackOptions.config,
     }, defaultOptions);
     runWebpack(`webpack:${type}:prod`, prodOptions, createProdConfig, cb);
@@ -103,17 +105,20 @@ export default (gulp, options) => {
       entry: webpackOptions.entry,
       outputPath: webpackOptions.watchOutputPath || webpackOptions.devOutputPath || webpackOptions.outputPath,
       publicPath: webpackOptions.publicPath,
+      externals: webpackOptions.externals,
       config: webpackOptions.watchConfig || webpackOptions.devConfig || webpackOptions.config,
       devServer: webpackOptions.devServer,
     }, defaultOptions);
     let { entry, devServer } = watchOptions;
     let config = loadConfig(`webpack:${type}:watch`, watchOptions, createWatchConfig);
 
+    console.log(config);
     devServer = _.merge({
       host: '0.0.0.0',
       port: 8080,
       hot: true,
       publicPath: watchOptions.publicPath,
+      headers: { 'Access-Control-Allow-Origin': '*' },
     }, devServer);
 
     config.entry = helper.initEntryForHMR(config.entry, '', devServer);

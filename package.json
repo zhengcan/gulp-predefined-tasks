@@ -61,5 +61,9 @@
     "webpack-dev-server": "^2.3.0",
     "webpack-hot-middleware": "^2.16.1",
     "webpack-stream": "^3.2.0"
+  },
+  "peerDependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   }
 }
