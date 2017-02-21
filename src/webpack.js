@@ -66,14 +66,17 @@ export default (gulp, options) => {
   };
 
   gulp.task(`webpack:${type}:dev`, (cb) => {
-    if (process.env.NODE_ENV !== 'development') {
-      gutil.log(gutil.colors.red('NODE_ENV is not "development", which may produce invalid artifacts.'));
+    if (process.env.NODE_ENV) {
+      if (process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== '') {
+        gutil.log(gutil.colors.red('NODE_ENV is not "development", which may produce invalid artifacts.'));
+      }
     }
 
     let devOptions = _.defaults({
       entry: webpackOptions.entry,
       outputPath: webpackOptions.devOutputPath || webpackOptions.outputPath,
       publicPath: webpackOptions.publicPath,
+      libraryTarget: webpackOptions.libraryTarget,
       externals: webpackOptions.externals,
       config: webpackOptions.devConfig || webpackOptions.config,
     }, defaultOptions);
@@ -90,6 +93,7 @@ export default (gulp, options) => {
       entry: webpackOptions.entry,
       outputPath: webpackOptions.prodOutputPath || webpackOptions.outputPath,
       publicPath: webpackOptions.publicPath,
+      libraryTarget: webpackOptions.libraryTarget,
       externals: webpackOptions.externals,
       config: webpackOptions.prodConfig || webpackOptions.config,
     }, defaultOptions);
@@ -105,6 +109,7 @@ export default (gulp, options) => {
       entry: webpackOptions.entry,
       outputPath: webpackOptions.watchOutputPath || webpackOptions.devOutputPath || webpackOptions.outputPath,
       publicPath: webpackOptions.publicPath,
+      libraryTarget: webpackOptions.libraryTarget,
       externals: webpackOptions.externals,
       config: webpackOptions.watchConfig || webpackOptions.devConfig || webpackOptions.config,
       devServer: webpackOptions.devServer,
@@ -112,7 +117,6 @@ export default (gulp, options) => {
     let { entry, devServer } = watchOptions;
     let config = loadConfig(`webpack:${type}:watch`, watchOptions, createWatchConfig);
 
-    console.log(config);
     devServer = _.merge({
       host: '0.0.0.0',
       port: 8080,

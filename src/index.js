@@ -1,15 +1,16 @@
 // Modules
+import moduleHelp from './help';
 import moduleLib from './lib';
 import moduleDist from './dist';
 import moduleWatch from './watch';
 import moduleWebpack from './webpack';
+import moduleLint from './lint';
 import moduleSubProject from './subproject';
 
 // Dependencies
 import _ from 'lodash';
 import pump from 'pump';
 import gutil from 'gulp-util';
-import taskListing from 'gulp-task-listing';
 
 // Default options
 const DEFAULT_OPTIONS = {
@@ -21,7 +22,7 @@ const DEFAULT_OPTIONS = {
 
 export default function registryTasks(gulp, options) {
   options = _.merge(DEFAULT_OPTIONS, options);
-  let { srcDir } = options;
+  let { type, srcDir } = options;
 
   let src = (globs, options) => {
     if (typeof globs === 'array') {
@@ -47,18 +48,30 @@ export default function registryTasks(gulp, options) {
 
   let enhancedGulp = {
     src, dest, watch,
+    tasks: gulp.tasks,
     task: (...args) => {
       return gulp.task(...args);
     }
   };
 
-  gulp.task('help', taskListing);
+  // import taskListing from 'gulp-task-listing';
+  // let taskListing = require('gulp-task-listing');
+  // gulp.task('help', taskListing);
 
   gulp.task('build:all', ['build:lib', 'build:dist']);
+  if (type === 'web') {
+    gulp.task('build:dev', ['build:lib', 'webpack:dev']);
+    gulp.task('build:prod', ['webpack:prod']);
+  } else if (type === 'lib') {
+    gulp.task('build:dev', ['build:lib', 'webpack:dev']);
+    gulp.task('build:prod', ['webpack:prod']);
+  }
 
+  moduleHelp(enhancedGulp, options);
   moduleLib(enhancedGulp, options);
   moduleDist(enhancedGulp, options);
   moduleWatch(enhancedGulp, options);
   moduleWebpack(enhancedGulp, options);
+  moduleLint(enhancedGulp, options);
   moduleSubProject(enhancedGulp, options);
 }

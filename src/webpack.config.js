@@ -4,7 +4,7 @@ import gutil from 'gulp-util';
 import webpack from 'webpack';
 import autoprefixer from 'autoprefixer';
 import helper from './webpackHelper';
-import { readPackageJson } from './helper';
+import { readPackageJson } from './package';
 
 const DEFAULT_OPTIONS = {
   entry: 'index.js',
@@ -13,7 +13,7 @@ const DEFAULT_OPTIONS = {
 };
 
 function buildConfig(options) {
-  let { type, srcDir, entry, outputPath, publicPath, externals, isProd } = options;
+  let { type, srcDir, entry, outputPath, publicPath, libraryTarget, externals, isProd } = options;
   let packageJson = readPackageJson();
 
   entry = helper.initEntry(entry, srcDir);
@@ -33,7 +33,7 @@ function buildConfig(options) {
     output = {
       path: outputPath,
       filename: `${packageJson.name}${isProd ? ".min" : ""}.js`,
-      libraryTarget: 'umd',
+      libraryTarget: libraryTarget || 'umd',
       library: packageJson.name
     };
   } else {
