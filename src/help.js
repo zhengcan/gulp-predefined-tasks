@@ -39,7 +39,8 @@ function help(gulp, subtaskFilter, excludeFilter) {
     header('Main Tasks');
 
     tasks.filter(filter(false, subtaskFilter)).forEach(function(name) {
-      console.log('    ' + chalk.cyan(name));
+      let desc = gulp.tasks[name].desc;
+      console.log('    ' + chalk.cyan(name) + (desc ? ' - ' + desc : ''));
     });
 
     var subtasks = tasks.filter(filter(true, subtaskFilter));
@@ -48,7 +49,8 @@ function help(gulp, subtaskFilter, excludeFilter) {
       header('Sub Tasks');
 
       subtasks.forEach(function(name) {
-        console.log('    ' + name);
+        let desc = gulp.tasks[name].desc;
+        console.log('    ' + chalk.cyan(name) + (desc ? ' - ' + desc : ''));
       });
     }
 

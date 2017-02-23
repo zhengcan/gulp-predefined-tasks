@@ -5,6 +5,7 @@ import moduleDist from './dist';
 import moduleWatch from './watch';
 import moduleWebpack from './webpack';
 import moduleLint from './lint';
+import moduleTest from './test';
 import moduleSubProject from './subproject';
 
 // Dependencies
@@ -16,19 +17,27 @@ import gutil from 'gulp-util';
 const DEFAULT_OPTIONS = {
   type: 'web',    // 'web' or 'lib'
   srcDir: './src/',
+  testDir: './test/',
   libDir: './lib/',
   distDir: './dist/',
 };
 
 export default function registryTasks(gulp, options) {
   options = _.merge(DEFAULT_OPTIONS, options);
-  let { type, srcDir } = options;
+  let { type, srcDir, testDir } = options;
 
   let src = (globs, options) => {
     if (typeof globs === 'array') {
       return gulp.src(_.map(globs, l => srcDir + l), options);
     } else {
       return gulp.src(srcDir + globs, options);
+    }
+  };
+  let testSrc = (globs, options) => {
+    if (typeof globs === 'array') {
+      return gulp.src(_.map(globs, l => testDir + l), options);
+    } else {
+      return gulp.src(testDir + globs, options);
     }
   };
   let dest = (globs, options) => {
@@ -47,16 +56,17 @@ export default function registryTasks(gulp, options) {
   };
 
   let enhancedGulp = {
-    src, dest, watch,
+    src, testSrc, dest, watch,
     tasks: gulp.tasks,
-    task: (...args) => {
-      return gulp.task(...args);
+    task: (name, ...args) => {
+      let resp = gulp.task(name, ...args);
+      let task = resp.tasks[name];
+      resp.desc = (desc) => {
+        task.desc = desc;
+      };
+      return resp;
     }
   };
-
-  // import taskListing from 'gulp-task-listing';
-  // let taskListing = require('gulp-task-listing');
-  // gulp.task('help', taskListing);
 
   gulp.task('build:all', ['build:lib', 'build:dist']);
   if (type === 'web') {
@@ -73,5 +83,6 @@ export default function registryTasks(gulp, options) {
   moduleWatch(enhancedGulp, options);
   moduleWebpack(enhancedGulp, options);
   moduleLint(enhancedGulp, options);
+  moduleTest(enhancedGulp, options);
   moduleSubProject(enhancedGulp, options);
 }
