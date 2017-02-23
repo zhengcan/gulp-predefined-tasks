@@ -25,10 +25,10 @@ This project provides several common used tasks for [Gulp][gulp].
 3. add gulpfile.babel.js
 
 ```
-  import registryTasks from 'gulp-predefined-tasks';
+  import registerTasks from 'gulp-predefined-tasks';
 
   let options = {};
-  registryTasks(gulp, options);
+  registerTasks(gulp, options);
 ```
 
 4. edit package.json to add scripts

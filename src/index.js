@@ -22,7 +22,7 @@ const DEFAULT_OPTIONS = {
   distDir: './dist/',
 };
 
-export default function registryTasks(gulp, options) {
+export default function registerTasks(gulp, options) {
   options = _.merge(DEFAULT_OPTIONS, options);
   let { type, srcDir, testDir } = options;
 
