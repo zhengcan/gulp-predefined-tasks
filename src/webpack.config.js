@@ -3,7 +3,7 @@ import path from 'path';
 import gutil from 'gulp-util';
 import webpack from 'webpack';
 import autoprefixer from 'autoprefixer';
-import helper from './webpackHelper';
+import helper from './webpack-helper';
 import { readPackageJson } from './package';
 
 const DEFAULT_OPTIONS = {

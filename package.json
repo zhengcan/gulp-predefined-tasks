@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "build": "gulp",
-    "watch": "gulp watch",
+    "watch": "gulp build:lib:js watch:lib:js",
     "webpack": "webpack"
   },
   "main": "lib/index.js",

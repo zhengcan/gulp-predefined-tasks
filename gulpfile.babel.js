@@ -14,5 +14,3 @@ let options = {
 registryTasks(gulp, options);
 
 gulp.task('default', ['build:lib', 'build:dist']);
-
-gulp.task('watch', ['build:lib:js', 'watch:lib:js']);

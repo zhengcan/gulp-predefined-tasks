@@ -2,9 +2,8 @@ import _ from 'lodash';
 import path from 'path';
 import pump from 'pump';
 import gutil from 'gulp-util';
-// import shell from 'gulp-shell';
-// import exec from 'gulp-exec';
 import { exec } from 'child_process';
+import { readPackageJson } from './package';
 
 function pipeWith(from, to, prefix) {
   let lastLine = null;
@@ -29,22 +28,19 @@ function pipeWith(from, to, prefix) {
 }
 
 export default (gulp, options) => {
-  let projectDir = process.cwd();
-  let pkg = require(path.join(projectDir, './package.json'));
-
-  gulp.task('deps', ['build:deps']);
-
   gulp.task('build:deps', (cb) => {
+    let pkg = readPackageJson();
     let dependencies = _.map(pkg.dependencies, (value, name) => { return { name, value }; });
     let fileDeps = _.filter(dependencies, d => _.startsWith(d.value, 'file:'));
     let linkDeps = _.filter(dependencies, d => _.startsWith(d.value, 'link:'));
 
+    let command = _.join(process.argv, ' ');
     let deps = [];
 
     deps = _.concat(deps, _.map(fileDeps, d => {
       return new Promise((resolve, reject) => {
         let relativePath = d.value.substr('file:'.length);
-        let child = exec('yarn run build:deps', {
+        let child = exec(command, {
           cwd: path.join(projectDir, relativePath)
         }, (error, stdout, stderr) => {
           if (error) {
@@ -60,5 +56,5 @@ export default (gulp, options) => {
     }));
 
     Promise.all(deps).then(o => cb());
-  });
+  }).desc('build project with dependencies.');
 }

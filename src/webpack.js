@@ -9,7 +9,7 @@ import WebpackDevServer from 'webpack-dev-server';
 // import webpackHotMiddleware from 'webpack-hot-middleware';
 // import browserSync from 'browser-sync';
 import { createDevConfig, createProdConfig, createWatchConfig } from './webpack.config';
-import helper from './webpackHelper';
+import helper from './webpack-helper';
 
 export default (gulp, options) => {
   if (!webpack) {
