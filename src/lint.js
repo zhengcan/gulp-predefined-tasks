@@ -11,9 +11,9 @@ export default (gulp, options) => {
       eslint.format(),
       eslint.failAfterError(),
     ], cb);
-  });
+  }).desc('lint source code');
 
   gulp.task('lint:watch', (cb) => {
     gulp.watch(JS_FILES, ['lint']);
-  });
+  }).desc('watch and lint source code');
 }

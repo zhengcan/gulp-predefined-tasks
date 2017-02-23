@@ -14,7 +14,9 @@ import { JS_FILES, CSS_FILES, LESS_FILES, IMAGE_FILES, FONT_FILES } from './cons
 export default (gulp, options) => {
   let { distDir } = options;
 
-  gulp.task('build:dist', ['build:dist:js', 'build:dist:style', 'build:dist:resource']);
+  gulp.task('build:dist', [
+    'build:dist:js', 'build:dist:style', 'build:dist:resource'
+  ]).desc('build project as distribution');
 
   gulp.task('build:dist:js', (cb) => {
     pump([
@@ -27,7 +29,9 @@ export default (gulp, options) => {
     ], cb);
   });
 
-  gulp.task('build:dist:style', ['build:dist:css', 'build:dist:less']);
+  gulp.task('build:dist:style', [
+    'build:dist:css', 'build:dist:less'
+  ]);
 
   gulp.task('build:dist:css', (cb) => {
     pump([
@@ -52,7 +56,9 @@ export default (gulp, options) => {
     ], cb);
   });
 
-  gulp.task('build:dist:resource', ['build:dist:image', 'build:dist:font']);
+  gulp.task('build:dist:resource', [
+    'build:dist:image', 'build:dist:font'
+  ]);
 
   gulp.task('build:dist:image', (cb) => {
     pump([

@@ -68,15 +68,12 @@ export default function registryTasks(gulp, options) {
     }
   };
 
-  gulp.task('build:all', ['build:lib', 'build:dist']);
-  if (type === 'web') {
-    gulp.task('build:dev', ['build:lib', 'webpack:dev']);
-    gulp.task('build:prod', ['webpack:prod']);
-  } else if (type === 'lib') {
-    gulp.task('build:dev', ['build:lib', 'webpack:dev']);
-    gulp.task('build:prod', ['webpack:prod']);
+  let moduleIndex = (gulp, options) => {
+    gulp.task('build:dev', ['build:lib', 'webpack:dev']).desc('build project in dev mode');
+    gulp.task('build:prod', ['webpack:prod']).desc('build projet in prod mode');
   }
 
+  moduleIndex(enhancedGulp, options);
   moduleHelp(enhancedGulp, options);
   moduleLib(enhancedGulp, options);
   moduleDist(enhancedGulp, options);

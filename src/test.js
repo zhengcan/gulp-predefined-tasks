@@ -18,9 +18,9 @@ export default (gulp, options) => {
           console.error(resp.message);
         }
       });
-  }).desc('Run all tests');
+  }).desc('run all tests');
 
   gulp.task('test:watch', (cb) => {
     gulp.watch(JS_FILES, ['test']);
-  }).desc('Watch and run all tests');
+  }).desc('watch and run all tests');
 }

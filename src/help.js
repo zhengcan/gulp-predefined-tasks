@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import _ from 'lodash';
 
 const DEFAULT_SUBTASK_REGEX = /[-_:]/;
 
@@ -50,7 +51,8 @@ function help(gulp, subtaskFilter, excludeFilter) {
 
       subtasks.forEach(function(name) {
         let desc = gulp.tasks[name].desc;
-        console.log('    ' + chalk.cyan(name) + (desc ? ' - ' + desc : ''));
+        let count = _.countBy(name, c => DEFAULT_SUBTASK_REGEX.test(c)).true;
+        console.log('    ' + (count > 1 ? '  ' : '') + chalk.cyan(name) + (desc ? ' - ' + desc : ''));
       });
     }
 
@@ -62,5 +64,5 @@ function help(gulp, subtaskFilter, excludeFilter) {
 }
 
 export default (gulp, options) => {
-  gulp.task('help', help(gulp));
+  gulp.task('help', help(gulp)).desc('show help');
 }

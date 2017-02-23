@@ -18,9 +18,9 @@ export default (gulp, options) => {
 
   let { type, srcDir, distDir } = options;
 
-  gulp.task('webpack:dev', [`webpack:${type}:dev`]);
-  gulp.task('webpack:prod', [`webpack:${type}:prod`]);
-  gulp.task('webpack:watch', [`webpack:${type}:watch`]);
+  gulp.task('webpack:dev', [`webpack:${type}:dev`]).desc('run webpack in dev mode');
+  gulp.task('webpack:prod', [`webpack:${type}:prod`]).desc('run webpack in prod mode');
+  gulp.task('webpack:watch', [`webpack:${type}:watch`]).desc('watch and run webpack in dev & watch mode');
 
   const defaultOptions = {
     type,

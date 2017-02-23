@@ -11,7 +11,9 @@ import { JS_FILES, CSS_FILES, LESS_FILES, IMAGE_FILES, FONT_FILES } from './cons
 export default (gulp, options) => {
   let { libDir } = options;
 
-  gulp.task('build:lib', ['build:lib:js', 'build:lib:style', 'build:lib:resource']);
+  gulp.task('build:lib', [
+    'build:lib:js', 'build:lib:style', 'build:lib:resource'
+  ]).desc('build project as library');
 
   gulp.task('build:lib:js', (cb) => {
     pump([
@@ -22,7 +24,9 @@ export default (gulp, options) => {
     ], cb);
   });
 
-  gulp.task('build:lib:style', ['build:lib:css', 'build:lib:less']);
+  gulp.task('build:lib:style', [
+    'build:lib:css', 'build:lib:less'
+  ]);
 
   gulp.task('build:lib:css', (cb) => {
     pump([
@@ -41,7 +45,9 @@ export default (gulp, options) => {
     ], cb);
   });
 
-  gulp.task('build:lib:resource', ['build:lib:image', 'build:lib:font']);
+  gulp.task('build:lib:resource', [
+    'build:lib:image', 'build:lib:font'
+  ]);
 
   gulp.task('build:lib:image', (cb) => {
     pump([
