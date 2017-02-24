@@ -1,6 +1,7 @@
 import pump from 'pump';
 import gutil from 'gulp-util';
 import babel from 'gulp-babel';
+import sourcemaps from 'gulp-sourcemaps';
 import uglify from 'gulp-uglify';
 import less from 'gulp-less';
 import postcss from 'gulp-postcss';
@@ -21,10 +22,21 @@ export default (gulp, options) => {
   gulp.task('build:dist:js', (cb) => {
     pump([
       gulp.src(JS_FILES),
-      babel(),
+      sourcemaps.init(),
+      babel({
+        presets: ["es2015", "react", "stage-2"]
+      }),
+      sourcemaps.write('.'),
       gulp.dest(distDir),
+      // Minimized version
+      gulp.src(JS_FILES),
+      sourcemaps.init(),
+      babel({
+        presets: ["es2015", "react", "stage-2"]
+      }),
       uglify(),
       rename({ suffix: '.min' }),
+      sourcemaps.write('.'),
       gulp.dest(distDir),
     ], cb);
   });

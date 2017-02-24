@@ -1,15 +1,18 @@
 import pump from 'pump';
-import mocha from 'gulp-mocha';
+import mocha from 'gulp-spawn-mocha';
 
 import { JS_FILES, CSS_FILES, LESS_FILES, IMAGE_FILES, FONT_FILES } from './constant';
 
 export default (gulp, options) => {
-  gulp.task('test', (cb) => {
-    gulp
+  function executeMocha(watch) {
+    return gulp
       .testSrc(JS_FILES, { read: false })
       .pipe(mocha({
+        env: { 'NODE_ENV': 'test' },
         watchExtensions: 'jsx',
+        require: 'ignore-styles',
         compilers: '.:babel-register',
+        watch,
       }))
       .once('error', (resp) => {
         if (resp.code === 'ENOENT') {
@@ -18,9 +21,12 @@ export default (gulp, options) => {
           console.error(resp.message);
         }
       });
+  }
+  gulp.task('test', (cb) => {
+    return executeMocha(false);
   }).desc('run all tests');
 
   gulp.task('test:watch', (cb) => {
-    gulp.watch(JS_FILES, ['test']);
+    return executeMocha(true);
   }).desc('watch and run all tests');
 }

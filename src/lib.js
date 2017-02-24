@@ -2,6 +2,7 @@ import pump from 'pump';
 import gutil from 'gulp-util';
 import babel from 'gulp-babel';
 import plumber from 'gulp-plumber';
+import sourcemaps from 'gulp-sourcemaps';
 import less from 'gulp-less';
 import postcss from 'gulp-postcss';
 import autoprefixer from 'autoprefixer';
@@ -19,7 +20,11 @@ export default (gulp, options) => {
     pump([
       gulp.src(JS_FILES),
       plumber(),
-      babel(),
+      sourcemaps.init(),
+      babel({
+        presets: ["es2015", "react", "stage-2"]
+      }),
+      sourcemaps.write(),
       gulp.dest(libDir),
     ], cb);
   });

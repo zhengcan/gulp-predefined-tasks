@@ -1,5 +1,6 @@
 // Modules
 import moduleHelp from './help';
+import moduleClean from './clean';
 import moduleLib from './lib';
 import moduleDist from './dist';
 import moduleWatch from './watch';
@@ -76,6 +77,7 @@ export default function registerTasks(gulp, options) {
 
   moduleIndex(enhancedGulp, options);
   moduleHelp(enhancedGulp, options);
+  moduleClean(enhancedGulp, options);
   moduleLib(enhancedGulp, options);
   moduleDist(enhancedGulp, options);
   moduleWatch(enhancedGulp, options);
