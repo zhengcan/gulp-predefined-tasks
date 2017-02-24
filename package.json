@@ -1,6 +1,6 @@
 {
   "name": "gulp-predefined-tasks",
-  "version": "0.1.1",
+  "version": "0.1.2-alpha.4",
   "repository": "https://github.com/zhengcan/gulp-predefined-tasks",
   "author": {
     "name": "Zheng Can",
@@ -10,16 +10,12 @@
   "scripts": {
     "build": "gulp",
     "watch": "gulp build:lib:js watch:lib:js",
-    "webpack": "webpack"
+    "prepublish": "gulp build:lib"
   },
   "main": "lib/index.js",
   "directories": {
-    "lib": "lib/"
+    "lib": "./lib"
   },
-  "files": [
-    "dist",
-    "lib"
-  ],
   "dependencies": {},
   "devDependencies": {
     "autoprefixer": "^6.7.2",
