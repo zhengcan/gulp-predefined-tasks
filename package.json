@@ -1,6 +1,6 @@
 {
   "name": "gulp-predefined-tasks",
-  "version": "0.1.2-alpha.6",
+  "version": "0.1.2-alpha.7",
   "repository": "https://github.com/zhengcan/gulp-predefined-tasks",
   "author": {
     "name": "Zheng Can",
@@ -17,7 +17,7 @@
     "lib": "./lib"
   },
   "files": [
-    "/lib"
+    "lib/"
   ],
   "dependencies": {},
   "devDependencies": {
