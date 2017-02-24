@@ -21,6 +21,9 @@ const DEFAULT_OPTIONS = {
   testDir: './test/',
   libDir: './lib/',
   distDir: './dist/',
+  babel: {
+    presets: ["es2015", "react", "stage-2"]
+  }
 };
 
 export default function registerTasks(gulp, options) {

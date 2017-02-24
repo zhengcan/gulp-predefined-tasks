@@ -7,6 +7,8 @@
 
 This project provides several common used tasks for [Gulp][gulp].
 
+It has built-in support for: [Babel][babel], [React][react], [Webpack 2][webpack] and more.
+
 ## Getting Started (Yarn)
 
 1. create project
@@ -44,6 +46,18 @@ This project provides several common used tasks for [Gulp][gulp].
 
 ## Options
 
+```
+  {
+    type: 'web',
+    srcDir: './src/',
+    testDir: './test/',
+    libDir: './lib/',
+    distDir: './dist/',
+    babel: { ... },
+    webpack: { ... }
+  }
+```
+
 ### type: String
 
 Project type.
@@ -76,6 +90,12 @@ Default: `./lib/`
 The folder to store published distribution artifacts.
 
 Default: `./dist/`
+
+### babel: Object
+
+The default [Babel][babel] configuration.
+
+Default: `{ presets: ["es2015", "react", "stage-2"] }`
 
 ### webpack: Object
 
@@ -149,5 +169,8 @@ Build project as `distribution`.
 [npm-image]: https://img.shields.io/npm/v/gulp-predefined-tasks.svg
 [npm-url]: https://www.npmjs.com/package/gulp-predefined-tasks
 [npm-badge]: https://badge.fury.io/js/gulp-predefined-tasks.svg
-[npm]: http://badge.fury.io/js/gulp-predefined-tasks
-[gulp]: http://github.com/gulpjs/gulp
+[npm]: https://badge.fury.io/js/gulp-predefined-tasks
+[gulp]: https://github.com/gulpjs/gulp
+[babel]: https://github.com/babel/babel
+[react]: https://github.com/facebook/react
+[webpack]: https://github.com/webpack/webpack

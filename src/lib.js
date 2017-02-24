@@ -21,9 +21,7 @@ export default (gulp, options) => {
       gulp.src(JS_FILES),
       plumber(),
       sourcemaps.init(),
-      babel({
-        presets: ["es2015", "react", "stage-2"]
-      }),
+      babel(options.babel),
       sourcemaps.write(),
       gulp.dest(libDir),
     ], cb);
