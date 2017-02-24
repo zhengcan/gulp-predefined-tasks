@@ -24,14 +24,7 @@ export default (gulp, options) => {
       gulp.src(JS_FILES),
       sourcemaps.init(),
       babel(options.babel),
-      sourcemaps.write('.'),
       gulp.dest(distDir),
-      // Minimized version
-      gulp.src(JS_FILES),
-      sourcemaps.init(),
-      babel({
-        presets: ["es2015", "react", "stage-2"]
-      }),
       uglify(),
       rename({ suffix: '.min' }),
       sourcemaps.write('.'),

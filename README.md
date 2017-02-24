@@ -1,11 +1,11 @@
 # gulp-predefined-tasks
 
+This project provides several common used tasks for Gulp.
+
 [![Travis][build-badge]][build]
 [![NPM version][npm-image]][npm-url]
 [![Downloads][downloads-image]][npm-url]
 [![npm][npm-badge]][npm]
-
-This project provides several common used tasks for [Gulp][gulp].
 
 It has built-in support for: [Babel][babel], [React][react], [Webpack 2][webpack] and more.
 

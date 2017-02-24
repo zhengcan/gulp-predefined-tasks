@@ -26,7 +26,7 @@ const DEFAULT_OPTIONS = {
   }
 };
 
-export default function registerTasks(gulp, options) {
+function registerTasks(gulp, options) {
   options = _.merge(DEFAULT_OPTIONS, options);
   let { type, srcDir, testDir } = options;
 
@@ -89,3 +89,6 @@ export default function registerTasks(gulp, options) {
   moduleTest(enhancedGulp, options);
   moduleSubProject(enhancedGulp, options);
 }
+
+module.exports = registerTasks;
+export default registerTasks;
