@@ -1,6 +1,6 @@
 {
   "name": "gulp-predefined-tasks",
-  "version": "0.1.2-alpha.14",
+  "version": "0.1.2-alpha.15",
   "repository": "https://github.com/zhengcan/gulp-predefined-tasks",
   "author": {
     "name": "Zheng Can",
@@ -17,9 +17,9 @@
     "lib": "./lib"
   },
   "files": [
-    "gulpfile.babel.js",
-    "src/",
-    "lib/"
+    "./gulpfile.babel.js",
+    "./src/*.js",
+    "./lib/*.js"
   ],
   "dependencies": {},
   "devDependencies": {
