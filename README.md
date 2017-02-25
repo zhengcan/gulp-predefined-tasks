@@ -108,6 +108,7 @@ Webpack configuration.
     publicPath: String,
     libraryTarget: String,
     externals: Object,
+    babel: Object,
     config: Object,
 
     devOutputPath: String,
@@ -162,6 +163,12 @@ Build project as `distribution`.
 ### lint / lint:watch
 
 ### test / test:watch
+
+## Known Issues
+
+- less-loader
+  - Unable to resolve module error when working with css-loader?modules=true
+    - https://github.com/webpack-contrib/less-loader/issues/109
 
 [build-badge]: https://travis-ci.org/zhengcan/gulp-predefined-tasks.svg?branch=master
 [build]: https://travis-ci.org/zhengcan/gulp-predefined-tasks

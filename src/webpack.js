@@ -3,7 +3,6 @@ import path from 'path';
 import pump from 'pump';
 import gutil from 'gulp-util';
 import webpack from 'webpack';
-import webpackStream from 'webpack-stream';
 import WebpackDevServer from 'webpack-dev-server';
 // import webpackDevMiddleware from 'webpack-dev-middleware';
 // import webpackHotMiddleware from 'webpack-hot-middleware';
@@ -57,12 +56,21 @@ export default (gulp, options) => {
     }
 
     let config = loadConfig(taskName, actualOptions, createConfig);
+    let bundler = webpack(config);
 
-    pump([
-      gulp.src(entry),
-      webpackStream(config, webpack),
-      gulp.dest(outputPath || 'dist'),
-    ], cb);
+    bundler.run((err, stats) => {
+      if (err) {
+        throw new gutil.PluginError(taskName, err);
+      }
+
+      gutil.log(stats.toString(config.stats));
+
+      if (stats.hasErrors()) {
+        cb(`Webpack failed in '${gutil.colors.cyan(taskName)}'`);
+      } else {
+        cb();
+      }
+    });
   };
 
   gulp.task(`webpack:${type}:dev`, (cb) => {
@@ -122,7 +130,7 @@ export default (gulp, options) => {
 
     devServer = _.merge({
       host: '0.0.0.0',
-      port: 8080,
+      port: 3000,
       hot: true,
       publicPath: watchOptions.publicPath,
       headers: { 'Access-Control-Allow-Origin': '*' },

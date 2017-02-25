@@ -79,7 +79,11 @@ function registerTasks(gulp, options) {
 
   let moduleIndex = (gulp, options) => {
     gulp.task('default', ['help']).desc('show help');
-    gulp.task('build:dev', ['build:lib', 'webpack:dev']).desc('build project in dev mode');
+    if (type === 'lib') {
+      gulp.task('build:dev', ['build:lib', 'webpack:dev']).desc('build project in dev mode');
+    } else {
+      gulp.task('build:dev', ['webpack:dev']).desc('build project in dev mode');
+    }
     gulp.task('build:prod', ['webpack:prod']).desc('build projet in prod mode');
   }
 

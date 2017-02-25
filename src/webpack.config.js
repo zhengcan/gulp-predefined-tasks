@@ -141,7 +141,7 @@ function createBaseConfig(options) {
         },
         {
           test: /\.(gif|png|jpe?g|svg)$/i,
-          loaders: [
+          use: [
             'url-loader',
             {
               loader: 'image-webpack-loader',
@@ -149,11 +149,18 @@ function createBaseConfig(options) {
             }
           ]
         },
+        {
+          test: /\.(eot|ttf|woff2?|svg)(\?.+)?$/,
+          use: [
+            'file-loader'
+          ]
+        },
       ],
     },
     stats: {
       colors: true,
       timings: true,
+      chunks: false,
     },
   };
 }
