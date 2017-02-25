@@ -22,7 +22,12 @@ const DEFAULT_OPTIONS = {
   libDir: './lib/',
   distDir: './dist/',
   babel: {
-    presets: ["es2015", "react", "stage-2"]
+    presets: ["es2015", "react", "stage-0"]
+  },
+  webpack: {
+    babel: {
+      presets: [["es2015", { modules: false }], "react", "stage-0"]
+    },
   }
 };
 

@@ -78,6 +78,7 @@ export default (gulp, options) => {
       publicPath: webpackOptions.publicPath,
       libraryTarget: webpackOptions.libraryTarget,
       externals: webpackOptions.externals,
+      babel: webpackOptions.babel,
       config: webpackOptions.devConfig || webpackOptions.config,
     }, defaultOptions);
     runWebpack(`webpack:${type}:dev`, devOptions, createDevConfig, cb);
@@ -95,6 +96,7 @@ export default (gulp, options) => {
       publicPath: webpackOptions.publicPath,
       libraryTarget: webpackOptions.libraryTarget,
       externals: webpackOptions.externals,
+      babel: webpackOptions.babel,
       config: webpackOptions.prodConfig || webpackOptions.config,
     }, defaultOptions);
     runWebpack(`webpack:${type}:prod`, prodOptions, createProdConfig, cb);
@@ -111,6 +113,7 @@ export default (gulp, options) => {
       publicPath: webpackOptions.publicPath,
       libraryTarget: webpackOptions.libraryTarget,
       externals: webpackOptions.externals,
+      babel: webpackOptions.babel,
       config: webpackOptions.watchConfig || webpackOptions.devConfig || webpackOptions.config,
       devServer: webpackOptions.devServer,
     }, defaultOptions);

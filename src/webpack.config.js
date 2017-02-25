@@ -12,6 +12,27 @@ const DEFAULT_OPTIONS = {
   publicPath: '/',
 };
 
+const DEFAULT_BABEL_OPTIONS = {
+  presets: [
+    ['es2015', { modules: false }],
+    "react",
+    "stage-0",
+  ]
+};
+
+const DEFAULT_IMAGEMIN_OPTIONS = {
+  gifsicle: {
+  },
+  mozjpeg: {
+  },
+  optipng: {
+  },
+  pngquent: {
+  },
+  svgo: {
+  }
+};
+
 function buildConfig(options) {
   let { type, srcDir, entry, outputPath, publicPath, libraryTarget, externals, isProd } = options;
   let packageJson = readPackageJson();
@@ -54,6 +75,35 @@ function buildConfig(options) {
 
 function createBaseConfig(options) {
   let config = buildConfig(options);
+
+  let babelLoader = {
+    loader: 'babel-loader',
+    query: options.babel || DEFAULT_BABEL_OPTIONS,
+  };
+  let styleLoader = {
+    loader: 'style-loader',
+  };
+  let cssLoader = {
+    loader: 'css-loader',
+    options: {
+      modules: false,
+      importLoaders: 2
+    }
+  };
+  let lessLoader = {
+    loader: 'less-loader',
+  };
+  let postcssLoader = {
+    loader: 'postcss-loader',
+    options: {
+      plugins: function () {
+        return [
+          require('autoprefixer')
+        ];
+      }
+    }
+  };
+
   return {
     entry: config.entry,
     output: config.output,
@@ -68,81 +118,42 @@ function createBaseConfig(options) {
         {
           test: /\.jsx?$/,
           use: [
-            'babel-loader',
+            babelLoader,
           ],
           exclude: /node_modules/
         },
         {
           test: /\.css$/,
           use: [
-            'style-loader',
-            'css-loader?modules',
-            {
-              loader: 'postcss-loader',
-              options: {
-                plugins: function () {
-                  return [
-                    require('autoprefixer')
-                  ];
-                }
-              }
-            },
+            styleLoader,
+            cssLoader,
+            postcssLoader,
           ],
         },
         {
           test: /\.less$/,
           use: [
-            'style-loader',
-            'css-loader?modules',
-            'less-loader',
+            styleLoader,
+            cssLoader,
+            lessLoader,
+            postcssLoader,
+          ],
+        },
+        {
+          test: /\.(gif|png|jpe?g|svg)$/i,
+          loaders: [
+            'url-loader',
             {
-              loader: 'postcss-loader',
-              options: {
-                plugins: function () {
-                  return [
-                    require('autoprefixer')
-                  ];
-                }
-              }
-            },
-          ],
-        },
-        {
-          test: /\.png$/,
-          use: [
-            'url-loader?mimetype=image/png',
-          ],
-        },
-        {
-          test: /\.jpe?g$/,
-          use: [
-            'url-loader?mimetype=image/jpeg',
-          ],
-        },
-        {
-          test: /\.gif$/,
-          use: [
-            'url-loader?mimetype=image/gif',
-          ],
-        },
-        {
-          test: /\.svg$/,
-          use: [
-            'svg-url-loader',
-          ],
+              loader: 'image-webpack-loader',
+              query: DEFAULT_IMAGEMIN_OPTIONS
+            }
+          ]
         },
       ],
     },
     stats: {
       colors: true,
-      reasons: false,
-      hash: false,
-      version: false,
       timings: true,
-      chunks: false,
-      chunkModules: false,
-      cached: false,
-      cachedAssets: false,
     },
   };
 }

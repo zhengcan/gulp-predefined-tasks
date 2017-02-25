@@ -95,7 +95,7 @@ Default: `./dist/`
 
 The default [Babel][babel] configuration.
 
-Default: `{ presets: ["es2015", "react", "stage-2"] }`
+Default: `{ presets: ["es2015", "react", "stage-0"] }`
 
 ### webpack: Object
 
