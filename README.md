@@ -5,7 +5,6 @@ This project provides several common used tasks for Gulp.
 [![Travis][build-badge]][build]
 [![NPM version][npm-image]][npm-url]
 [![Downloads][downloads-image]][npm-url]
-[![npm][npm-badge]][npm]
 
 It has built-in support for: [Babel][babel], [React][react], [Webpack 2][webpack] ([HMR][hmr], [Tree Shaking][tree-shaking]), [Mocha][mocha] and more.
 
@@ -296,8 +295,6 @@ Run tests by using [Mocha][mocha].
 [downloads-image]: https://img.shields.io/npm/dm/gulp-predefined-tasks.svg
 [npm-image]: https://img.shields.io/npm/v/gulp-predefined-tasks.svg
 [npm-url]: https://www.npmjs.com/package/gulp-predefined-tasks
-[npm-badge]: https://badge.fury.io/js/gulp-predefined-tasks.svg
-[npm]: https://badge.fury.io/js/gulp-predefined-tasks
 [gulp]: https://github.com/gulpjs/gulp
 [babel]: https://github.com/babel/babel
 [react]: https://github.com/facebook/react
