@@ -105,19 +105,12 @@ Webpack configuration.
   {
     entry: String or Array or Object,
 
-    config: {
+    config: String or Object,             // default config file
+    devConfig: String or Object,          // merge with `config` for `webpack:dev`
+    prodConfig: String or Object,         // merge with `config` for `webpack:prod`
+    watchConfig: String or Object,        // merge with `config` for `webpack:watch`
 
-    },
-
-    devConfig: Object,                    // merge with `config` for `webpack:dev`
-
-    prodConfig: Object,                   // merge with `config` for `webpack:prod`
-
-    watchConfig: Object,                  // merge with `config` for `webpack:watch`
-
-    babel: {
-
-    },
+    babel: Object,
 
     devServer: {
       host: String,                       // default: 0.0.0.0
@@ -134,6 +127,20 @@ Webpack configuration.
   }
 ```
 
+#### config / devConfig / prodConfig / watchConfig
+
+It could be webpack config file path, or webpack config object.
+
+#### babel: Object
+
+[Babel][babel] options object.
+
+Default: `{ presets: [["es2015", { modules: false }], "react", "stage-0"] }`
+
+#### devServer: Object
+
+The options object of WebpackDevServer.
+
 #### onMerge: (object, sources): Object
 
 - object (Object): The destination object.
@@ -143,7 +150,7 @@ As default, it will concat any array values.
 
 #### onEntry: (entry): String or Array
 
-- entry (String or Array): The value of entry
+- entry (String or Array): The value of entry.
 
 #### onConfig: (config): Object
 

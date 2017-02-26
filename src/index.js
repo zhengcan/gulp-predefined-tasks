@@ -13,6 +13,7 @@ import moduleSubProject from './subproject';
 import _ from 'lodash';
 import pump from 'pump';
 import gutil from 'gulp-util';
+import yargs from 'yargs';
 
 // Default options
 const DEFAULT_OPTIONS = {
@@ -21,10 +22,20 @@ const DEFAULT_OPTIONS = {
   testDir: './test/',
   libDir: './lib/',
   distDir: './dist/',
+  babel: {
+    presets: ["es2015", "react", "stage-0"]
+  }
 };
 
 function prepareOptions(options) {
   options = _.merge(DEFAULT_OPTIONS, options);
+  let argv = yargs.argv;
+  if (argv.libDir) {
+    options.libDir = argv.libDir;
+  }
+  if (argv.distDir) {
+    options.distDir = argv.distDir;
+  }
   return options;
 }
 
