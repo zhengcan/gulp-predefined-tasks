@@ -6,10 +6,22 @@
     "name": "Zheng Can",
     "email": "zc3593835@gmail.com"
   },
+  "keywords": [
+    "gulp",
+    "webpack",
+    "react",
+    "eslint",
+    "mocha",
+    "es2015",
+    "hmr",
+    "tree-shaking",
+    "hot",
+    "load"
+  ],
   "license": "MIT",
   "scripts": {
     "build": "gulp",
-    "watch": "gulp build:lib:js watch:lib:js",
+    "watch": "gulp watch",
     "prepublish": "gulp build:lib:js"
   },
   "main": "lib/index.js",
@@ -61,7 +73,6 @@
     "postcss-loader": "^1.2.2",
     "pump": "^1.0.2",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2",
     "react-hot-loader": "v3.0.0-beta.6",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
@@ -72,7 +83,6 @@
     "yargs": "^6.6.0"
   },
   "peerDependencies": {
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react": "^15.4.2"
   }
 }

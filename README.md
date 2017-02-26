@@ -40,6 +40,7 @@ It has built-in support for: [Babel][babel], [React][react], [Webpack 2][webpack
     "build": "gulp",
     "build:dev": "cross-env NODE_ENV=development gulp build:dev",
     "build:prod": "cross-env NODE_ENV=production gulp build:prod",
+    "build:watch": "cross-env NODE_ENV=development gulp build:watch",
     "clean": "gulp clean",
     "test": "gulp test",
     "test:watch": "gulp test:watch",
@@ -205,6 +206,10 @@ The following argument could be set via CLI.
   - overwrite the value of `options.distDir`
 - `outputFilename`
   - overwrite the value of `options.webpack.config.output.filename`
+- `port`
+  - overwrite the value of `options.webpack.devServer.port`
+- `proxy`
+  - overwrite the value of `options.webpack.devServer.proxy.'/'.target`
 
 For example:
 

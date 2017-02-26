@@ -45,6 +45,24 @@ function prepareOptions(options) {
       }
     });
   }
+  if (argv.port) {
+    options.webpack = _.merge({}, options.webpack, {
+      devServer: {
+        port: argv.port
+      }
+    });
+  }
+  if (argv.proxy) {
+    options.webpack = _.merge({}, options.webpack, {
+      devServer: {
+        proxy: {
+          '/': {
+            target: argv.proxy
+          }
+        }
+      }
+    });
+  }
   return options;
 }
 
@@ -98,8 +116,12 @@ function registerTasks(gulp, options) {
     gulp.task('default', ['help']).desc('show help');
     if (type === 'lib') {
       gulp.task('build:dev', ['build:lib', 'webpack:dev']).desc('build project in dev mode');
+      gulp.task('build:watch', ['build:lib', 'watch:lib']).desc('watch and build project');
+      gulp.task('watch', ['build:watch']).desc('watch and build project');
     } else {
       gulp.task('build:dev', ['webpack:dev']).desc('build project in dev mode');
+      gulp.task('build:watch', ['webpack:watch']).desc('watch and build project');
+      gulp.task('watch', ['webpack:watch']).desc('watch and build project');
     }
     gulp.task('build:prod', ['webpack:prod']).desc('build projet in prod mode');
   }
