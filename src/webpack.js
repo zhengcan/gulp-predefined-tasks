@@ -74,10 +74,6 @@ function onMerge(object, ...sources) {
   return _.mergeWith(object, ...sources, concatArray);
 }
 
-function onConfig(config) {
-  return config;
-}
-
 function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntry) {
   let { type, srcDir, distDir } = options;
   let packageJson = readPackageJson();
@@ -113,7 +109,7 @@ function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntr
     }));
   } else {
     defaultConfig = _.merge({
-      entry: path.join(srcDir, 'index.js'),
+      entry: './' + path.join(srcDir, 'index.js'),
       output,
     }, configFactory({
       babel: DEFAULT_BABEL
@@ -154,8 +150,12 @@ function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntr
     mergedConfig.entry = entry;
   }
 
-  let result = (webpackOptions.onConfig || onConfig)(mergedConfig);
-  return result || mergedConfig;
+  // Convert config
+  if (webpackOptions && typeof webpackOptions.onConfig === 'function') {
+    mergedConfig = webpackOptions.onConfig(mergedConfig);
+  }
+
+  return mergedConfig;
 }
 
 function runWebpack(taskName, config, cb) {

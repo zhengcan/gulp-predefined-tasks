@@ -1,0 +1,33 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "gulp",
+    "build:dev": "cross-env NODE_ENV=development gulp build:dev",
+    "build:prod": "cross-env NODE_ENV=production gulp build:prod",
+    "build:watch": "cross-env NODE_ENV=development gulp build:watch",
+    "clean": "gulp clean",
+    "test": "gulp test",
+    "test:watch": "gulp test:watch",
+    "webpack:dev": "cross-env NODE_ENV=development gulp webpack:dev",
+    "webpack:prod": "cross-env NODE_ENV=production gulp webpack:prod",
+    "start": "cross-env NODE_ENV=watch gulp webpack:watch"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  },
+  "devDependencies": {
+    "babel-register": "^6.23.0",
+    "cross-env": "^3.1.4",
+    "gulp": "^3.9.1",
+    "gulp-predefined-tasks": "^0.1.4"
+  },
+  "linkDependencies": {
+    "libA": "link:../libA",
+    "libB": "link:../libB"
+  }
+}

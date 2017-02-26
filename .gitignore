@@ -40,7 +40,3 @@ jspm_packages
 tmp
 lib
 dist
-example/app
-example/libA
-example/libB
-example/libA1

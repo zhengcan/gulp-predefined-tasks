@@ -69,6 +69,7 @@
     "ignore-styles": "^5.0.1",
     "image-webpack-loader": "^3.2.0",
     "less-loader": "^2.2.3",
+    "lodash": "^4.17.4",
     "mocha": "^3.2.0",
     "postcss-loader": "^1.2.2",
     "pump": "^1.0.2",

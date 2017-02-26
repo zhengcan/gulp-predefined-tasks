@@ -249,7 +249,16 @@ Build project as `distribution`.
 
 It will generate several artifacts in `prod` mode.
 
-### build:deps
+### with:deps
+
+Check all dependencies (with `file:` and `link:` prefix) from `dependencies` and `linkDependencies`, and execute same tasks in them.
+
+For example:
+
+```
+  cd ./example/app
+  yarn run build with:deps build:dev
+```
 
 ### watch / watch:lib
 

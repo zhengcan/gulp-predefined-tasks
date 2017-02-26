@@ -28,33 +28,43 @@ function pipeWith(from, to, prefix) {
 }
 
 export default (gulp, options) => {
-  gulp.task('build:deps', (cb) => {
-    let pkg = readPackageJson();
-    let dependencies = _.map(pkg.dependencies, (value, name) => { return { name, value }; });
-    let fileDeps = _.filter(dependencies, d => _.startsWith(d.value, 'file:'));
-    let linkDeps = _.filter(dependencies, d => _.startsWith(d.value, 'link:'));
-
+  gulp.task('with:deps', (cb) => {
     let command = _.join(process.argv, ' ');
-    let deps = [];
+    let packageJson = readPackageJson();
 
-    deps = _.concat(deps, _.map(fileDeps, d => {
-      return new Promise((resolve, reject) => {
-        let relativePath = d.value.substr('file:'.length);
-        let child = exec(command, {
-          cwd: path.join(projectDir, relativePath)
-        }, (error, stdout, stderr) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(d.name);
-          }
+    let promises = _({})
+      .merge(packageJson.dependencies, packageJson.linkDependencies)
+      .map((value, name) => { return { name, value }; })
+      .filter(d => _.startsWith(d.value, 'file:') || _.startsWith(d.value, 'link:'))
+      .map(d => {
+        d.relativePath = d.value.substr('file:'.length);
+        d.absolutePath = path.join(process.cwd(), d.relativePath);
+        return d;
+      })
+      .filter(d => {
+        let pkg = require(path.join(d.absolutePath, './package.json'));
+        return _.has(pkg.devDependencies, 'gulp-predefined-tasks')
+          || _.has(pkg.dependencies, 'gulp-predefined-tasks');
+      })
+      .map(d => {
+        return new Promise((resolve, reject) => {
+          let child = exec(command, {
+            cwd: d.absolutePath
+          }, (error, stdout, stderr) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(d.name);
+            }
+          });
+
+          console.log(`[${gutil.colors.yellow(d.name)}] ${command}`);
+          pipeWith(child.stdout, process.stdout, d.name)
+          pipeWith(child.stderr, process.stderr, d.name);
         });
+      })
+      .value();
 
-        pipeWith(child.stdout, process.stdout, d.name)
-        pipeWith(child.stderr, process.stderr, d.name);
-      });
-    }));
-
-    Promise.all(deps).then(o => cb());
-  }).desc('build project with dependencies.');
+    Promise.all(promises).then(o => cb()).catch(e => cb(e));
+  }).desc('run same build tasks in child projects.');
 }
