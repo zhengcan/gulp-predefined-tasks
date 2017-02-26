@@ -104,29 +104,50 @@ Webpack configuration.
 ```
   {
     entry: String or Array or Object,
-    outputPath: String,
-    publicPath: String,
-    libraryTarget: String,
-    externals: Object,
-    babel: Object,
-    config: Object,
 
-    devOutputPath: String,
-    devConfig: Object,
+    config: {
 
-    prodOutputPath: String,
-    prodConfig: Object,
+    },
 
-    watchOutputPath: String,
-    watchConfig: Object,
+    devConfig: Object,                    // merge with `config` for `webpack:dev`
+
+    prodConfig: Object,                   // merge with `config` for `webpack:prod`
+
+    watchConfig: Object,                  // merge with `config` for `webpack:watch`
+
+    babel: {
+
+    },
+
     devServer: {
-      host: String,
-      port: bool,
+      host: String,                       // default: 0.0.0.0
+      port: bool,                         // default: 3000
+      hot: bool,                          // default: true
+      contentBase: bool or Object,
       proxy: Object,
       ...
-    }
+    },
+
+    onMerge: function,                    // merge all config objects
+    onEntry: function,                    // rewrite entry item
+    onConfig: function,                   // handle merged config object
   }
 ```
+
+#### onMerge: (object, sources): Object
+
+- object (Object): The destination object.
+- sources (...Object): The source objects.
+
+As default, it will concat any array values.
+
+#### onEntry: (entry): String or Array
+
+- entry (String or Array): The value of entry
+
+#### onConfig: (config): Object
+
+- config (Object): The merged config object.
 
 ## Tasks
 
@@ -138,21 +159,35 @@ Show all tasks.
 
 Build project in `dev` mode.
 
+- For `lib` project, it will run `build:lib` and `webpack:dev`.
+- For `web` project, it will run `webpack:dev`.
+
 ### build:prod
 
 Build project in `prod` mode.
+
+- For `lib` project, it will run `webpack:prod`.
+- For `web` project, it will run `webpack:prod`.
 
 ### build:lib
 
 Build project as `library`.
 
+It will generate several artifacts in `dev` mode.
+
 ### build:dist
 
 Build project as `distribution`.
 
+It will generate several artifacts in `prod` mode.
+
 ### build:deps
 
 ### watch / watch:lib
+
+Watch project, and build as `library`.
+
+It depends on `build:lib`.
 
 ### webpack:dev
 
@@ -164,8 +199,14 @@ Build project as `distribution`.
 
 ### test / test:watch
 
+Run tests by using [Mocha][mocha].
+
 ## Known Issues
 
+- Yarn
+  - Yarn ignore `.npmignore` when publishing artifacts
+    - https://github.com/yarnpkg/yarn/issues/685
+    - https://github.com/yarnpkg/yarn/issues/754
 - less-loader
   - Unable to resolve module error when working with css-loader?modules=true
     - https://github.com/webpack-contrib/less-loader/issues/109
@@ -181,3 +222,4 @@ Build project as `distribution`.
 [babel]: https://github.com/babel/babel
 [react]: https://github.com/facebook/react
 [webpack]: https://github.com/webpack/webpack
+[mocha]: https://github.com/mochajs/mocha

@@ -21,18 +21,15 @@ const DEFAULT_OPTIONS = {
   testDir: './test/',
   libDir: './lib/',
   distDir: './dist/',
-  babel: {
-    presets: ["es2015", "react", "stage-0"]
-  },
-  webpack: {
-    babel: {
-      presets: [["es2015", { modules: false }], "react", "stage-0"]
-    },
-  }
 };
 
-function registerTasks(gulp, options) {
+function prepareOptions(options) {
   options = _.merge(DEFAULT_OPTIONS, options);
+  return options;
+}
+
+function registerTasks(gulp, options) {
+  options = prepareOptions(options);
   let { type, srcDir, testDir } = options;
 
   let src = (globs, options) => {
