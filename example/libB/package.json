@@ -9,12 +9,11 @@
     "build:prod": "cross-env NODE_ENV=production gulp build:prod",
     "build:watch": "cross-env NODE_ENV=development gulp build:watch"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-register": "^6.23.0",
     "cross-env": "^3.1.4",
     "gulp": "^3.9.1",
-    "gulp-predefined-tasks": "^0.1.4"
+    "gulp-predefined-tasks": "alpha"
   }
 }

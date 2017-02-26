@@ -24,7 +24,7 @@
     "babel-register": "^6.23.0",
     "cross-env": "^3.1.4",
     "gulp": "^3.9.1",
-    "gulp-predefined-tasks": "^0.1.4"
+    "gulp-predefined-tasks": "alpha"
   },
   "linkDependencies": {
     "libA": "link:../libA",

@@ -1,1 +1,1 @@
-export default 'this is libB';
+export default 'libB';
