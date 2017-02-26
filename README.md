@@ -137,9 +137,9 @@ The default [Babel][babel] configuration.
 
 Default: `{ presets: ["es2015", "react", "stage-0"] }`
 
-### webpack: Object
+### webpack: bool or Object
 
-Webpack configuration.
+Webpack configuration. Or set to `false` to disable webpack.
 
 ```
   {

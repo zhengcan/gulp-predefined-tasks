@@ -68,7 +68,7 @@ function prepareOptions(options) {
 
 function registerTasks(gulp, options) {
   options = prepareOptions(options);
-  let { type, srcDir, testDir } = options;
+  let { type, srcDir, testDir, webpack: webpackOptions } = options;
 
   let src = (globs, options) => {
     if (typeof globs === 'array') {
@@ -112,18 +112,27 @@ function registerTasks(gulp, options) {
     }
   };
 
+  let useWebpack = (webpackOptions !== false);
+
   let moduleIndex = (gulp, options) => {
     gulp.task('default', ['help']).desc('show help');
-    if (type === 'lib') {
-      gulp.task('build:dev', ['build:lib', 'webpack:dev']).desc('build project in dev mode');
+    if (useWebpack) {
+      if (type === 'lib') {
+        gulp.task('build:dev', ['build:lib', 'webpack:dev']).desc('build project in dev mode');
+        gulp.task('build:watch', ['build:lib', 'watch:lib']).desc('watch and build project');
+        gulp.task('watch', ['build:watch']).desc('watch and build project');
+      } else {
+        gulp.task('build:dev', ['webpack:dev']).desc('build project in dev mode');
+        gulp.task('build:watch', ['webpack:watch']).desc('watch and build project');
+        gulp.task('watch', ['webpack:watch']).desc('watch and build project');
+      }
+      gulp.task('build:prod', ['webpack:prod']).desc('build projet in prod mode');
+    } else {
+      gulp.task('build:dev', ['build:lib']).desc('build project in dev mode');
       gulp.task('build:watch', ['build:lib', 'watch:lib']).desc('watch and build project');
       gulp.task('watch', ['build:watch']).desc('watch and build project');
-    } else {
-      gulp.task('build:dev', ['webpack:dev']).desc('build project in dev mode');
-      gulp.task('build:watch', ['webpack:watch']).desc('watch and build project');
-      gulp.task('watch', ['webpack:watch']).desc('watch and build project');
+      gulp.task('build:prod', ['build:dist']).desc('build projet in prod mode');
     }
-    gulp.task('build:prod', ['webpack:prod']).desc('build projet in prod mode');
   }
 
   moduleIndex(enhancedGulp, options);
@@ -132,7 +141,7 @@ function registerTasks(gulp, options) {
   moduleLib(enhancedGulp, options);
   moduleDist(enhancedGulp, options);
   moduleWatch(enhancedGulp, options);
-  moduleWebpack(enhancedGulp, options);
+  useWebpack && moduleWebpack(enhancedGulp, options);
   moduleLint(enhancedGulp, options);
   moduleTest(enhancedGulp, options);
   moduleSubProject(enhancedGulp, options);

@@ -1,5 +1,4 @@
 import gulp from 'gulp';
-import babel from 'gulp-babel';
 import registerTasks from 'gulp-predefined-tasks';
 
 let options = {
