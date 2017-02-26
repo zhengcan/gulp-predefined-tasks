@@ -1,0 +1,17 @@
+{
+  "presets": [
+    ["es2015", { "modules": false }],
+    "stage-0",
+    "react"
+  ],
+  "env": {
+    "watch": {
+      "plugins": [
+        "react-hot-loader/babel",
+      ],
+    },
+    "test": {
+      "presets": ["es2015", "react", "stage-0"]
+    }
+  }
+}
