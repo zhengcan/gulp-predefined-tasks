@@ -15,7 +15,14 @@ const DEFAULT_BABEL = {
     ['es2015', { modules: false }],
     'react',
     'stage-0',
-  ]
+  ],
+  env: {
+    watch: {
+      plugins: [
+        "react-hot-loader/babel",
+      ],
+    }
+  },
 };
 
 const DEFAULT_DEV_SERVER = {
@@ -29,6 +36,7 @@ const DEFAULT_DEV_SERVER = {
     timings: true,
     chunks: false,
     hash: false,
+    version: false,
   },
 };
 
@@ -208,20 +216,24 @@ export default (gulp, options) => {
     if (webpackOptions && webpackOptions.devServer) {
       devServer = _.merge({}, devServer, webpackOptions.devServer);
     }
+
+    let { host, port } = devServer;
+    let hostInLink = host === '0.0.0.0' ? 'localhost' : host;
+
     let config = prepareConfig(options, webpackOptions, 'watch', createWatchConfig, rewriteEntryForHMR([
       // necessary for hot reloading with IE
       'eventsource-polyfill',
       // activate HMR for React
       'react-hot-loader/patch',
       // bundle the client for webpack-dev-server and connect to the provided endpoint
-      `webpack-dev-server/client?http://${devServer.host}:${devServer.port}`,
+      `webpack-dev-server/client?http://${hostInLink}:${port}`,
       // bundle the client for hot reloading only- means to only hot reload for successful updates
       'webpack/hot/only-dev-server',
     ]));
 
     let bundler = webpack(config);
 
-    new WebpackDevServer(bundler, devServer).listen(devServer.port, devServer.host, (err) => {
+    new WebpackDevServer(bundler, devServer).listen(port, host, (err) => {
       if (err) {
         throw new gutil.PluginError("webpack-dev-server", err);
       }
@@ -229,10 +241,7 @@ export default (gulp, options) => {
       if (!_.isEmpty(devServer.index)) {
         path = _.startsWith(devServer.index, '/') ? devServer.index : '/' + devServer.index;
       }
-      gutil.log(
-        gutil.colors.yellow('[DevServer]'),
-        `http://${devServer.host === '0.0.0.0' ? 'localhost' : devServer.host}:${devServer.port}${path}`
-      );
+      gutil.log(gutil.colors.yellow('[DevServer]'), `http://${hostInLink}:${port}${path}`);
     });
   });
 }

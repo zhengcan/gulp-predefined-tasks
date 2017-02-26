@@ -8,6 +8,10 @@ export default (gulp, options) => {
     'watch:lib'
   ]).desc('watch and build project');
 
+  gulp.task('build:watch', [
+    'watch:lib'
+  ]).desc('watch and build project (alias to watch)');
+
   gulp.task('watch:lib', (cb) => {
     gulp.watch(JS_FILES, ['build:lib:js']);
     gulp.watch(CSS_FILES, ['build:lib:css']);

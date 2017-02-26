@@ -7,7 +7,7 @@ This project provides several common used tasks for Gulp.
 [![Downloads][downloads-image]][npm-url]
 [![npm][npm-badge]][npm]
 
-It has built-in support for: [Babel][babel], [React][react], [Webpack 2][webpack] and more.
+It has built-in support for: [Babel][babel], [React][react], [Webpack 2][webpack] ([HMR][hmr], [Tree Shaking][tree-shaking]), [Mocha][mocha] and more.
 
 ## Getting Started (Yarn)
 
@@ -24,7 +24,7 @@ It has built-in support for: [Babel][babel], [React][react], [Webpack 2][webpack
   yarn add -D gulp-predefined-tasks
 ```
 
-3. add gulpfile.babel.js
+3. add `gulpfile.babel.js`
 
 ```
   import registerTasks from 'gulp-predefined-tasks';
@@ -33,7 +33,7 @@ It has built-in support for: [Babel][babel], [React][react], [Webpack 2][webpack
   registerTasks(gulp, options);
 ```
 
-4. edit package.json to add scripts
+4. edit `package.json` to add scripts
 
 ```
   "scripts": {
@@ -47,6 +47,40 @@ It has built-in support for: [Babel][babel], [React][react], [Webpack 2][webpack
     "webpack:prod": "cross-env NODE_ENV=production gulp webpack:prod",
     "start": "cross-env NODE_ENV=watch gulp webpack:watch"
   },
+```
+
+5. add `.babelrc`
+
+To support [Tree Shaking][tree-shaking] feature, we should add two `.babelrc` files.
+
+In root folder:
+
+```
+  {
+    "presets": ["es2015", "react", "stage-0"]
+  }
+```
+
+In `srcDir` folder:
+
+```
+  {
+    "presets": [
+      ["es2015", { "modules": false }],
+      "stage-0",
+      "react"
+    ],
+    "env": {
+      "watch": {
+        "plugins": [
+          "react-hot-loader/babel",
+        ],
+      },
+      "test": {
+        "presets": ["es2015", "react", "stage-0"]
+      }
+    }
+  }
 ```
 
 ## Options
@@ -161,6 +195,23 @@ As default, it will concat any array values.
 
 - config (Object): The merged config object.
 
+## CLI arguments
+
+The following argument could be set via CLI.
+
+- `libDir`
+  - overwrite the value of `options.srcDir`
+- `distDir`
+  - overwrite the value of `options.distDir`
+- `outputFilename`
+  - overwrite the value of `options.webpack.config.output.filename`
+
+For example:
+
+```
+  yarn run build -- --libDir <NEW_LIB_DIR>
+```
+
 ## Tasks
 
 ### help
@@ -219,7 +270,10 @@ Run tests by using [Mocha][mocha].
   - Yarn ignore `.npmignore` when publishing artifacts
     - https://github.com/yarnpkg/yarn/issues/685
     - https://github.com/yarnpkg/yarn/issues/754
-- less-loader
+- Webpack UglifyJsPlugin
+  - Unable to drop unused React component
+    - UglifyJS warning: `Side effects in initialization of unused variable XxxReactComponent`
+- Webpack less-loader
   - Unable to resolve module error when working with css-loader?modules=true
     - https://github.com/webpack-contrib/less-loader/issues/109
 
@@ -235,3 +289,5 @@ Run tests by using [Mocha][mocha].
 [react]: https://github.com/facebook/react
 [webpack]: https://github.com/webpack/webpack
 [mocha]: https://github.com/mochajs/mocha
+[hmr]: https://webpack.js.org/guides/hmr-react/
+[tree-shaking]: https://webpack.js.org/guides/tree-shaking/

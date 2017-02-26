@@ -36,6 +36,15 @@ function prepareOptions(options) {
   if (argv.distDir) {
     options.distDir = argv.distDir;
   }
+  if (argv.outputFilename) {
+    options.webpack = _.merge({}, options.webpack, {
+      config: {
+        output: {
+          filename: argv.outputFilename
+        }
+      }
+    });
+  }
   return options;
 }
 
