@@ -38,9 +38,14 @@ It has built-in support for: [Babel][babel], [React][react], [Webpack 2][webpack
 ```
   "scripts": {
     "build": "gulp",
-    "start": "cross-env NODE_ENV=watch gulp webpack:watch",
+    "build:dev": "cross-env NODE_ENV=development gulp build:dev",
+    "build:prod": "cross-env NODE_ENV=production gulp build:prod",
+    "clean": "gulp clean",
+    "test": "gulp test",
+    "test:watch": "gulp test:watch",
     "webpack:dev": "cross-env NODE_ENV=development gulp webpack:dev",
-    "webpack:prod": "cross-env NODE_ENV=production gulp webpack:prod"
+    "webpack:prod": "cross-env NODE_ENV=production gulp webpack:prod",
+    "start": "cross-env NODE_ENV=watch gulp webpack:watch"
   },
 ```
 
