@@ -99,43 +99,31 @@ function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntr
   }
 
   // Prepare default config
-  let defaultConfig = null;
-  if (webpackOptions) {
-    defaultConfig = _.merge({
-      entry: webpackOptions.entry,
-      output,
-    }, configFactory({
-      babel: webpackOptions.babel || DEFAULT_BABEL
-    }));
-  } else {
-    defaultConfig = _.merge({
-      entry: './' + path.join(srcDir, 'index.js'),
-      output,
-    }, configFactory({
-      babel: DEFAULT_BABEL
-    }));
-  }
+  let defaultConfig = _.merge({
+    entry: webpackOptions.entry || ('./' + path.join(srcDir, 'index.js')),
+    output: output,
+  }, configFactory({
+    babel: webpackOptions.babel || DEFAULT_BABEL
+  }));
   // console.log(webpackOptions);
   // console.log('!!!! default config');
   // console.log(defaultConfig);
 
   // Merge all config objects
   let mergedConfig = defaultConfig;
-  if (webpackOptions) {
-    let modeConfig = webpackOptions[mode + 'Config'];
-    let resolvedModeConfig = resolveConfig(modeConfig);
-    // console.log('!!!! resolved mode config');
-    // console.log(resolvedModeConfig);
-    let resolvedConfig = resolveConfig(webpackOptions.config);
-    // console.log('!!!! resolved config');
-    // console.log(resolvedConfig);
-    mergedConfig = (webpackOptions.onMerge || onMerge)(
-      {}, defaultConfig, resolvedConfig, resolvedModeConfig
-    );
-  }
+  let modeConfig = webpackOptions[mode + 'Config'];
+  let resolvedModeConfig = resolveConfig(modeConfig);
+  // console.log('!!!! resolved mode config');
+  // console.log(resolvedModeConfig);
+  let resolvedConfig = resolveConfig(webpackOptions.config);
+  // console.log('!!!! resolved config');
+  // console.log(resolvedConfig);
+  mergedConfig = (webpackOptions.onMerge || onMerge)(
+    {}, defaultConfig, resolvedConfig, resolvedModeConfig
+  );
 
   // Rewrite entry
-  if (webpackOptions && typeof webpackOptions.onEntry === 'function') {
+  if (typeof webpackOptions.onEntry === 'function') {
     rewriteEntry = webpackOptions.onEntry;
   }
   if (rewriteEntry) {
@@ -150,9 +138,17 @@ function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntr
     mergedConfig.entry = entry;
   }
 
+  // Check and fix output.path
+  if (_.startsWith(mergedConfig.output.path, './')) {
+    mergedConfig.output.path = path.join(process.cwd(), mergedConfig.output.path);
+  }
+
   // Convert config
-  if (webpackOptions && typeof webpackOptions.onConfig === 'function') {
-    mergedConfig = webpackOptions.onConfig(mergedConfig);
+  if (typeof webpackOptions.onConfig === 'function') {
+    let result = webpackOptions.onConfig(mergedConfig);
+    if (result) {
+      return result;
+    }
   }
 
   return mergedConfig;
@@ -177,11 +173,15 @@ function runWebpack(taskName, config, cb) {
 }
 
 export default (gulp, options) => {
+  let { type, srcDir, distDir, webpack: webpackOptions } = options;
+  if (!webpackOptions) {
+    // Skip all webpack tasks
+    return;
+  }
+
   if (!webpack) {
     throw new gutil.PluginError('gulp', 'Unable to load "webpack" module.');
   }
-
-  let { type, srcDir, distDir, webpack: webpackOptions } = options;
 
   gulp.task('webpack:dev', [`webpack:${type}:dev`]).desc('run webpack in dev mode');
   gulp.task('webpack:prod', [`webpack:${type}:prod`]).desc('run webpack in prod mode');
@@ -212,14 +212,13 @@ export default (gulp, options) => {
       gutil.log(gutil.colors.red('NODE_ENV is not "watch", which may produce invalid artifacts.'));
     }
 
-    let devServer = DEFAULT_DEV_SERVER;
-    if (webpackOptions && webpackOptions.devServer) {
-      devServer = _.merge({}, devServer, webpackOptions.devServer);
-    }
-
+    let devServer = _.merge({}, DEFAULT_DEV_SERVER, webpackOptions.devServer);
     let { host, port } = devServer;
     let hostInLink = host === '0.0.0.0' ? 'localhost' : host;
 
+    if (!webpackOptions.watchConfig) {
+      webpackOptions.watchConfig = webpackOptions.devConfig;
+    }
     let config = prepareConfig(options, webpackOptions, 'watch', createWatchConfig, rewriteEntryForHMR([
       // necessary for hot reloading with IE
       'eventsource-polyfill',
@@ -233,15 +232,37 @@ export default (gulp, options) => {
 
     let bundler = webpack(config);
 
+    if (webpackOptions.devServer
+      && !webpackOptions.devServer.publicPath) {
+      devServer.publicPath = config.output.publicPath;
+    }
+
+    let proxy = devServer.proxy;
+    let proxyTarget = null;
+    if (proxy && proxy['/'] && proxy['/'].target) {
+      proxyTarget = proxy['/'].target;
+    }
+
     new WebpackDevServer(bundler, devServer).listen(port, host, (err) => {
       if (err) {
         throw new gutil.PluginError("webpack-dev-server", err);
       }
-      let path = '/index.html';
+
+      let path = '/';
       if (!_.isEmpty(devServer.index)) {
         path = _.startsWith(devServer.index, '/') ? devServer.index : '/' + devServer.index;
       }
-      gutil.log(gutil.colors.yellow('[DevServer]'), `http://${hostInLink}:${port}${path}`);
+      if (proxyTarget) {
+        gutil.log(
+          gutil.colors.yellow('[DevServer]'),
+          `http://${hostInLink}:${port}${path}  >>  ${proxyTarget}`
+        );
+      } else {
+        gutil.log(
+          gutil.colors.yellow('[DevServer]'),
+          `http://${hostInLink}:${port}${path}`
+        );
+      }
     });
   });
 }

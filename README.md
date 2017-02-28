@@ -23,12 +23,16 @@ It has built-in support for: [Babel][babel], [React][react], [Webpack 2][webpack
   yarn add -D gulp-predefined-tasks
 ```
 
+Please install `react-hot-loader@3.0.0-beta.6` if you want to use HMR with React.
+
 3. add `gulpfile.babel.js`
 
 ```
   import registerTasks from 'gulp-predefined-tasks';
 
-  let options = {};
+  let options = {
+    // several options
+  };
   registerTasks(gulp, options);
 ```
 
@@ -139,6 +143,8 @@ Default: `{ presets: ["es2015", "react", "stage-0"] }`
 ### webpack: bool or Object
 
 Webpack configuration. Or set to `false` to disable webpack.
+
+Default: `false`
 
 ```
   {

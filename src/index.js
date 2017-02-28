@@ -24,7 +24,8 @@ const DEFAULT_OPTIONS = {
   distDir: './dist/',
   babel: {
     presets: ["es2015", "react", "stage-0"]
-  }
+  },
+  webpack: false,   // disable webpack as default
 };
 
 function prepareOptions(options) {
@@ -36,32 +37,34 @@ function prepareOptions(options) {
   if (argv.distDir) {
     options.distDir = argv.distDir;
   }
-  if (argv.outputFilename) {
-    options.webpack = _.merge({}, options.webpack, {
-      config: {
-        output: {
-          filename: argv.outputFilename
-        }
-      }
-    });
-  }
-  if (argv.port) {
-    options.webpack = _.merge({}, options.webpack, {
-      devServer: {
-        port: argv.port
-      }
-    });
-  }
-  if (argv.proxy) {
-    options.webpack = _.merge({}, options.webpack, {
-      devServer: {
-        proxy: {
-          '/': {
-            target: argv.proxy
+  if (options.webpack) {
+    if (argv.outputFilename) {
+      options.webpack = _.merge({}, options.webpack, {
+        config: {
+          output: {
+            filename: argv.outputFilename
           }
         }
-      }
-    });
+      });
+    }
+    if (argv.port) {
+      options.webpack = _.merge({}, options.webpack, {
+        devServer: {
+          port: argv.port
+        }
+      });
+    }
+    if (argv.proxy) {
+      options.webpack = _.merge({}, options.webpack, {
+        devServer: {
+          proxy: {
+            '/': {
+              target: argv.proxy
+            }
+          }
+        }
+      });
+    }
   }
   return options;
 }
