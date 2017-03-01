@@ -1,3 +1,6 @@
+export const TYPE_WEB = 'web';
+export const TYPE_LIB = 'lib';
+
 export const JS_FILES = '**/*.{js,jsx}';
 export const LESS_FILES = '**/*.less';
 export const CSS_FILES = '**/*.css';

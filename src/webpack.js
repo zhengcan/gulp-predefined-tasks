@@ -10,6 +10,8 @@ import WebpackDevServer from 'webpack-dev-server';
 import { createDevConfig, createProdConfig, createWatchConfig } from './webpack.config';
 import { readPackageJson } from './package';
 
+import * as constant from './constant';
+
 const DEFAULT_BABEL = {
   presets: [
     ['es2015', { modules: false }],
@@ -81,14 +83,14 @@ function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntr
   // Prepare default output setting
   let outputPath = path.join(process.cwd(), distDir);
   let output = null;
-  if (type === 'lib') {
+  if (type === constant.TYPE_LIB) {
     output = {
       path: outputPath,
       filename: `${packageJson.name}${mode === 'prod' ? '.min' : ''}.js`,
       libraryTarget: 'umd',
       library: packageJson.name
     };
-  } else if (type === 'web') {
+  } else if (type === constant.TYPE_WEB) {
     output = {
       filename: '[name].bundle.js',
       path: outputPath,

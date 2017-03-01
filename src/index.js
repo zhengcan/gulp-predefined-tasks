@@ -14,10 +14,11 @@ import _ from 'lodash';
 import pump from 'pump';
 import gutil from 'gulp-util';
 import yargs from 'yargs';
+import * as constant from './constant';
 
 // Default options
 const DEFAULT_OPTIONS = {
-  type: 'web',    // 'web' or 'lib'
+  type: constant.TYPE_WEB,    // 'web' or 'lib'
   srcDir: './src/',
   testDir: './test/',
   libDir: './lib/',
@@ -120,7 +121,7 @@ function registerTasks(gulp, options) {
   let moduleIndex = (gulp, options) => {
     gulp.task('default', ['help']).desc('show help');
     if (useWebpack) {
-      if (type === 'lib') {
+      if (type === constant.TYPE_LIB) {
         gulp.task('build:dev', ['build:lib', 'webpack:dev']).desc('build project in dev mode');
         gulp.task('build:watch', ['build:lib', 'watch:lib']).desc('watch and build project');
         gulp.task('watch', ['build:watch']).desc('watch and build project');

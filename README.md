@@ -224,6 +224,8 @@ For example:
 
 ## Tasks
 
+Developer may overwrite the following tasks to fit their needs.
+
 ### help
 
 Show all tasks.
@@ -256,7 +258,7 @@ It will generate several artifacts in `prod` mode.
 
 ### with:deps
 
-Check all dependencies (with `file:` and `link:` prefix) from `dependencies` and `linkDependencies`, and execute same tasks in them.
+[Incubating] Check all dependencies (with `file:` and `link:` prefix) from `dependencies` and `linkDependencies`, and execute same tasks in them.
 
 For example:
 
@@ -273,11 +275,19 @@ It depends on `build:lib`.
 
 ### webpack:dev
 
+Run `webpack` to bundle artifacts in `dev` mode.
+
 ### webpack:prod
+
+Run `webpack` to bundle artifacts in `prod` mode.
 
 ### webpack:watch
 
+Run `webpack` to bundle artifacts in `watch` mode.
+
 ### lint / lint:watch
+
+Lint source codes using [ESLint][eslint].
 
 ### test / test:watch
 
@@ -305,6 +315,7 @@ Run tests by using [Mocha][mocha].
 [babel]: https://github.com/babel/babel
 [react]: https://github.com/facebook/react
 [webpack]: https://github.com/webpack/webpack
+[eslint]: http://eslint.org/
 [mocha]: https://github.com/mochajs/mocha
 [hmr]: https://webpack.js.org/guides/hmr-react/
 [tree-shaking]: https://webpack.js.org/guides/tree-shaking/
