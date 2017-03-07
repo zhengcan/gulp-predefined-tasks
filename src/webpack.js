@@ -86,7 +86,7 @@ function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntr
   if (type === constant.TYPE_LIB) {
     output = {
       path: outputPath,
-      filename: `${packageJson.name}${mode === 'prod' ? '.min' : ''}.js`,
+      filename: `[name]${mode === 'prod' ? '.min' : ''}.js`,
       libraryTarget: 'umd',
       library: packageJson.name
     };
