@@ -32,7 +32,7 @@ let options = {
     // babel: {
     //   bb: 123
     // },
-    // onMerge: (object, ...sources) => {
+    // onMerge: (mode, object, ...sources) => {
     //   console.log('$$$$$$');
     //   console.log(object);
     //   console.log(sources);
@@ -42,7 +42,7 @@ let options = {
     //     }
     //   });
     // },
-    // onConfig: (config) => {
+    // onConfig: (mode, config) => {
     //   console.log('@@@@@ merged');
     //   console.log(config);
     //   console.log('@@@@@ babel');

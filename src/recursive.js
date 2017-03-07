@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import path from 'path';
-import pump from 'pump';
 import gutil from 'gulp-util';
 import { exec } from 'child_process';
 import fs from 'fs';
-import { readPackageJson } from './package';
 
 const THIS_PROJECT = 'gulp-predefined-tasks';
+
+const TYPE_NORMAL = 'normal';
+const TYPE_LINK = 'link';
 
 function pipeWith(from, to, prefix) {
   let lastLine = null;
@@ -31,37 +32,51 @@ function pipeWith(from, to, prefix) {
 }
 
 export default (gulp, options) => {
-  gulp.task('with:deps', (cb) => {
+  // Parse argv
+  let { argv, packageJson } = options;
+
+  // Execute gulp tasks recursively
+  if (argv.recursive || argv.R) {
     let command;
     if (/^win/.test(process.platform)) {
       command = _.join(_.map(process.argv, arg => '"' + arg + '"'), ' ');
     } else {
       command = _.join(process.argv, ' ');
     }
-    let packageJson = readPackageJson();
 
     let promises = _({})
-      .merge(packageJson.dependencies, packageJson.linkDependencies)
-      .map((value, name) => { return { name, value }; })
+      .merge(_.map(packageJson.dependencies, (value, name) => { return { type: TYPE_NORMAL, name, value }; }))
+      .merge(_.map(packageJson.linkDependencies, (value, name) => { return { type: TYPE_LINK, name, value }; }))
       .filter(d => _.startsWith(d.value, 'file:') || _.startsWith(d.value, 'link:'))
       .map(d => {
         let [protocol, relativePath] = _.split(d.value, ':');
-        if (protocol === 'file') {
-          d.absolutePath = path.join(process.cwd(), relativePath);
-        } else { // link:
-          let pathInModules = path.join(process.cwd(), 'node_modules', d.name);
-          let stat = fs.lstatSync(pathInModules);
+        if (d.type === TYPE_NORMAL) {
+          if (protocol === 'file') {
+            d.absolutePath = path.join(process.cwd(), relativePath);
+          } else {
+            // Not support yet
+          }
+        } else { // type === TYPE_LINK
+          let pathInNodeModules = path.join(process.cwd(), 'node_modules', d.name);
+          let stat = fs.lstatSync(pathInNodeModules);
           if (stat.isSymbolicLink()) {
             // Use symbolic link
-            d.absolutePath = pathInModules;
+            d.absolutePath = pathInNodeModules;
           } else {
             // Find via value
-            d.absolutePath = path.join(process.cwd(), relativePath);
+            if (protocol === 'file') {
+              d.absolutePath = path.join(process.cwd(), relativePath);
+            } else { // protocol === 'link'
+              console.warn(`No link for ${d.name}.`);
+            }
           }
         }
         return d;
       })
       .filter(d => {
+        if (!d.absolutePath) {
+          return false;
+        }
         let pkg = require(path.join(d.absolutePath, './package.json'));
         return _.has(pkg.devDependencies, THIS_PROJECT)
           || _.has(pkg.dependencies, THIS_PROJECT);
@@ -85,6 +100,8 @@ export default (gulp, options) => {
       })
       .value();
 
-    Promise.all(promises).then(o => cb()).catch(e => cb(e));
-  }).desc('run same build tasks in child projects.');
+    Promise.all(promises).then(o => {}, e => {
+      console.error(e);
+    });
+  }
 }

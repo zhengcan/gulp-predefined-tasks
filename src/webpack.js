@@ -8,24 +8,7 @@ import WebpackDevServer from 'webpack-dev-server';
 // import webpackHotMiddleware from 'webpack-hot-middleware';
 // import browserSync from 'browser-sync';
 import { createDevConfig, createProdConfig, createWatchConfig } from './webpack.config';
-import { readPackageJson } from './package';
-
 import * as constant from './constant';
-
-const DEFAULT_BABEL = {
-  presets: [
-    ['es2015', { modules: false }],
-    'react',
-    'stage-0',
-  ],
-  env: {
-    watch: {
-      plugins: [
-        "react-hot-loader/babel",
-      ],
-    }
-  },
-};
 
 const DEFAULT_DEV_SERVER = {
   host: '0.0.0.0',
@@ -42,6 +25,10 @@ const DEFAULT_DEV_SERVER = {
   },
 };
 
+const MODE_DEV = 'dev';
+const MODE_PROD = 'prod';
+const MODE_WATCH = 'watch';
+
 function resolveConfig(config) {
   if (!config) {
     return null;
@@ -55,7 +42,7 @@ function resolveConfig(config) {
 }
 
 function rewriteEntryForHMR(prepend) {
-  return (entry) => {
+  return (mode, entry) => {
     if (typeof entry === 'string') {
       return _.concat(prepend, entry);
     } else if (typeof entry === 'array') {
@@ -72,13 +59,12 @@ function concatArray(objValue, srcValue) {
   }
 }
 
-function onMerge(object, ...sources) {
+function onMerge(mode, object, ...sources) {
   return _.mergeWith(object, ...sources, concatArray);
 }
 
 function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntry) {
-  let { type, srcDir, distDir } = options;
-  let packageJson = readPackageJson();
+  let { type, srcDir, distDir, packageJson } = options;
 
   // Prepare default output setting
   let outputPath = path.join(process.cwd(), distDir);
@@ -86,7 +72,7 @@ function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntr
   if (type === constant.TYPE_LIB) {
     output = {
       path: outputPath,
-      filename: `[name]${mode === 'prod' ? '.min' : ''}.js`,
+      filename: `[name]${mode === MODE_PROD ? '.min' : ''}.js`,
       libraryTarget: 'umd',
       library: packageJson.name
     };
@@ -105,23 +91,16 @@ function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntr
     entry: webpackOptions.entry || ('./' + path.join(srcDir, 'index.js')),
     output: output,
   }, configFactory({
-    babel: webpackOptions.babel || DEFAULT_BABEL
+    babel: webpackOptions.babel || constant.getWebpackBabelOptions(options.hasReact)
   }));
-  // console.log(webpackOptions);
-  // console.log('!!!! default config');
-  // console.log(defaultConfig);
 
   // Merge all config objects
   let mergedConfig = defaultConfig;
   let modeConfig = webpackOptions[mode + 'Config'];
   let resolvedModeConfig = resolveConfig(modeConfig);
-  // console.log('!!!! resolved mode config');
-  // console.log(resolvedModeConfig);
   let resolvedConfig = resolveConfig(webpackOptions.config);
-  // console.log('!!!! resolved config');
-  // console.log(resolvedConfig);
   mergedConfig = (webpackOptions.onMerge || onMerge)(
-    {}, defaultConfig, resolvedConfig, resolvedModeConfig
+    mode, {}, defaultConfig, resolvedConfig, resolvedModeConfig
   );
 
   // Rewrite entry
@@ -131,9 +110,9 @@ function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntr
   if (rewriteEntry) {
     let entry = mergedConfig.entry;
     if (typeof entry === 'string' || typeof entry === 'array') {
-      entry = rewriteEntry(entry);
+      entry = rewriteEntry(mode, entry);
     } else if (typeof entry === 'object') {
-      entry = _.mapValues(entry, rewriteEntry);
+      entry = _.mapValues(entry, e => rewriteEntry(mode, e));
     } else {
       console.warn('Unknown entry value: ' + entry);
     }
@@ -147,7 +126,7 @@ function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntr
 
   // Convert config
   if (typeof webpackOptions.onConfig === 'function') {
-    let result = webpackOptions.onConfig(mergedConfig);
+    let result = webpackOptions.onConfig(mode, mergedConfig);
     if (result) {
       return result;
     }
@@ -175,7 +154,7 @@ function runWebpack(taskName, config, cb) {
 }
 
 export default (gulp, options) => {
-  let { type, srcDir, distDir, webpack: webpackOptions } = options;
+  let { type, srcDir, distDir, webpack: webpackOptions, argv } = options;
   if (!webpackOptions) {
     // Skip all webpack tasks
     return;
@@ -185,6 +164,36 @@ export default (gulp, options) => {
     throw new gutil.PluginError('gulp', 'Unable to load "webpack" module.');
   }
 
+  // Parse argv
+  if (argv.outputFilename) {
+    webpackOptions = _.merge({}, webpackOptions, {
+      config: {
+        output: {
+          filename: argv.outputFilename
+        }
+      }
+    });
+  }
+  if (argv.port) {
+    webpackOptions = _.merge({}, webpackOptions, {
+      devServer: {
+        port: argv.port
+      }
+    });
+  }
+  if (argv.proxy) {
+    webpackOptions = _.merge({}, webpackOptions, {
+      devServer: {
+        proxy: {
+          '/': {
+            target: argv.proxy
+          }
+        }
+      }
+    });
+  }
+
+  // Register tasks
   gulp.task('webpack:dev', [`webpack:${type}:dev`]).desc('run webpack in dev mode');
   gulp.task('webpack:prod', [`webpack:${type}:prod`]).desc('run webpack in prod mode');
   gulp.task('webpack:watch', [`webpack:${type}:watch`]).desc('watch and run webpack in dev & watch mode');
@@ -196,7 +205,7 @@ export default (gulp, options) => {
       }
     }
 
-    let config = prepareConfig(options, webpackOptions, 'dev', createDevConfig);
+    let config = prepareConfig(options, webpackOptions, MODE_DEV, createDevConfig);
     runWebpack(`webpack:${type}:dev`, config, cb);
   });
 
@@ -205,7 +214,7 @@ export default (gulp, options) => {
       gutil.log(gutil.colors.red('NODE_ENV is not "production", which may produce invalid artifacts.'));
     }
 
-    let config = prepareConfig(options, webpackOptions, 'prod', createProdConfig);
+    let config = prepareConfig(options, webpackOptions, MODE_PROD, createProdConfig);
     runWebpack(`webpack:${type}:prod`, config, cb);
   });
 
@@ -221,16 +230,17 @@ export default (gulp, options) => {
     if (!webpackOptions.watchConfig) {
       webpackOptions.watchConfig = webpackOptions.devConfig;
     }
-    let config = prepareConfig(options, webpackOptions, 'watch', createWatchConfig, rewriteEntryForHMR([
+    let hmrPrepend = _.compact([
       // necessary for hot reloading with IE
       'eventsource-polyfill',
       // activate HMR for React
-      'react-hot-loader/patch',
+      options.hasReact ? 'react-hot-loader/patch' : null,
       // bundle the client for webpack-dev-server and connect to the provided endpoint
       `webpack-dev-server/client?http://${hostInLink}:${port}`,
       // bundle the client for hot reloading only- means to only hot reload for successful updates
       'webpack/hot/only-dev-server',
-    ]));
+    ]);
+    let config = prepareConfig(options, webpackOptions, MODE_WATCH, createWatchConfig, rewriteEntryForHMR(hmrPrepend));
 
     let bundler = webpack(config);
 

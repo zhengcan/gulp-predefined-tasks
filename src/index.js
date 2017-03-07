@@ -7,7 +7,7 @@ import moduleWatch from './watch';
 import moduleWebpack from './webpack';
 import moduleLint from './lint';
 import moduleTest from './test';
-import moduleSubProject from './subproject';
+import moduleRecursive from './recursive';
 
 // Dependencies
 import _ from 'lodash';
@@ -15,6 +15,12 @@ import pump from 'pump';
 import gutil from 'gulp-util';
 import yargs from 'yargs';
 import * as constant from './constant';
+import { readPackageJson } from './package';
+
+let packageJson = readPackageJson();
+let hasReact = _.has(packageJson, 'dependencies.react')
+  || _.has(packageJson, 'devDependencies.react')
+  || _.has(packageJson, 'peerDependencies.react');
 
 // Default options
 const DEFAULT_OPTIONS = {
@@ -23,49 +29,21 @@ const DEFAULT_OPTIONS = {
   testDir: './test/',
   libDir: './lib/',
   distDir: './dist/',
-  babel: {
-    presets: ["es2015", "react", "stage-0"]
-  },
+  babel: constant.getBabelOptions(hasReact),
   webpack: false,   // disable webpack as default
 };
 
 function prepareOptions(options) {
   options = _.merge(DEFAULT_OPTIONS, options);
-  let argv = yargs.argv;
+  options.packageJson = packageJson;
+  options.hasReact = hasReact;
+  let argv = options.argv = yargs.argv;
+
   if (argv.libDir) {
     options.libDir = argv.libDir;
   }
   if (argv.distDir) {
     options.distDir = argv.distDir;
-  }
-  if (options.webpack) {
-    if (argv.outputFilename) {
-      options.webpack = _.merge({}, options.webpack, {
-        config: {
-          output: {
-            filename: argv.outputFilename
-          }
-        }
-      });
-    }
-    if (argv.port) {
-      options.webpack = _.merge({}, options.webpack, {
-        devServer: {
-          port: argv.port
-        }
-      });
-    }
-    if (argv.proxy) {
-      options.webpack = _.merge({}, options.webpack, {
-        devServer: {
-          proxy: {
-            '/': {
-              target: argv.proxy
-            }
-          }
-        }
-      });
-    }
   }
   return options;
 }
@@ -148,7 +126,7 @@ function registerTasks(gulp, options) {
   useWebpack && moduleWebpack(enhancedGulp, options);
   moduleLint(enhancedGulp, options);
   moduleTest(enhancedGulp, options);
-  moduleSubProject(enhancedGulp, options);
+  moduleRecursive(enhancedGulp, options);
 
   // Return the enhanced gulp
   return enhancedGulp;

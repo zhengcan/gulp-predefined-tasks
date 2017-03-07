@@ -186,40 +186,51 @@ Default: `{ presets: [["es2015", { modules: false }], "react", "stage-0"] }`
 
 The options object of WebpackDevServer.
 
-#### onMerge: (object, sources) => Object
+#### onMerge: (mode, object, sources) => Object
 
+- mode (String): The runtime mode: `dev`, `prod` or `watch`.
 - object (Object): The destination object.
 - sources (...Object): The source objects.
 
 As default, it will concat any array values.
 
-#### onEntry: (entry) => String or Array
+#### onEntry: (mode, entry) => String or Array
 
+- mode (String): The runtime mode: `dev`, `prod` or `watch`.
 - entry (String or Array): The value of entry.
 
-#### onConfig: (config) => Object
+#### onConfig: (mode, config) => Object
 
+- mode (String): The runtime mode: `dev`, `prod` or `watch`.
 - config (Object): The merged config object.
 
 ## CLI arguments
 
 The following argument could be set via CLI.
 
-- `libDir`
-  - overwrite the value of `options.srcDir`
-- `distDir`
-  - overwrite the value of `options.distDir`
-- `outputFilename`
-  - overwrite the value of `options.webpack.config.output.filename`
-- `port`
-  - overwrite the value of `options.webpack.devServer.port`
-- `proxy`
-  - overwrite the value of `options.webpack.devServer.proxy.'/'.target`
+- `--libDir <path>`
+  - Overwrite the value of `options.srcDir`
+- `--distDir <path>`
+  - Overwrite the value of `options.distDir`
+- `--outputFilename <filename>`
+  - Overwrite the value of `options.webpack.config.output.filename`
+- `--port <port>`
+  - Overwrite the value of `options.webpack.devServer.port`
+- `--proxy <target>`
+  - Overwrite the value of `options.webpack.devServer.proxy.'/'.target`
+- `--recursive` or `-R`
+  - _[Incubating]_
+  - Check all dependencies (with `file:` and `link:` prefix) from `dependencies` and `linkDependencies`, and execute same tasks in them.
 
 For example:
 
 ```
-  yarn run build -- --libDir <NEW_LIB_DIR>
+  # Customize the libDir in runtime
+  yarn run build:dev -- --libDir <NEW_LIB_DIR>
+
+  # Run build:dev for all projects
+  cd ./example/app
+  yarn run build:dev -- --recursive
 ```
 
 ## Tasks
@@ -255,17 +266,6 @@ It will generate several artifacts in `dev` mode.
 Build project as `distribution`.
 
 It will generate several artifacts in `prod` mode.
-
-### with:deps _[Incubating]_
-
-Check all dependencies (with `file:` and `link:` prefix) from `dependencies` and `linkDependencies`, and execute same tasks in them.
-
-For example:
-
-```
-  cd ./example/app
-  yarn run build with:deps build:dev
-```
 
 ### watch / watch:lib
 
