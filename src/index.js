@@ -149,6 +149,9 @@ function registerTasks(gulp, options) {
   moduleLint(enhancedGulp, options);
   moduleTest(enhancedGulp, options);
   moduleSubProject(enhancedGulp, options);
+
+  // Return the enhanced gulp
+  return enhancedGulp;
 }
 
 module.exports = registerTasks;

@@ -186,18 +186,18 @@ Default: `{ presets: [["es2015", { modules: false }], "react", "stage-0"] }`
 
 The options object of WebpackDevServer.
 
-#### onMerge: (object, sources): Object
+#### onMerge: (object, sources) => Object
 
 - object (Object): The destination object.
 - sources (...Object): The source objects.
 
 As default, it will concat any array values.
 
-#### onEntry: (entry): String or Array
+#### onEntry: (entry) => String or Array
 
 - entry (String or Array): The value of entry.
 
-#### onConfig: (config): Object
+#### onConfig: (config) => Object
 
 - config (Object): The merged config object.
 
@@ -256,9 +256,9 @@ Build project as `distribution`.
 
 It will generate several artifacts in `prod` mode.
 
-### with:deps
+### with:deps _[Incubating]_
 
-[Incubating] Check all dependencies (with `file:` and `link:` prefix) from `dependencies` and `linkDependencies`, and execute same tasks in them.
+Check all dependencies (with `file:` and `link:` prefix) from `dependencies` and `linkDependencies`, and execute same tasks in them.
 
 For example:
 

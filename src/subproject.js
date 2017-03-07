@@ -5,6 +5,8 @@ import gutil from 'gulp-util';
 import { exec } from 'child_process';
 import { readPackageJson } from './package';
 
+const THIS_PROJECT = 'gulp-predefined-tasks';
+
 function pipeWith(from, to, prefix) {
   let lastLine = null;
   from.on('data', (chunk) => {
@@ -43,8 +45,8 @@ export default (gulp, options) => {
       })
       .filter(d => {
         let pkg = require(path.join(d.absolutePath, './package.json'));
-        return _.has(pkg.devDependencies, 'gulp-predefined-tasks')
-          || _.has(pkg.dependencies, 'gulp-predefined-tasks');
+        return _.has(pkg.devDependencies, THIS_PROJECT)
+          || _.has(pkg.dependencies, THIS_PROJECT);
       })
       .map(d => {
         return new Promise((resolve, reject) => {

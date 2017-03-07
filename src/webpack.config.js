@@ -107,7 +107,7 @@ function createBaseConfig(options) {
   };
 }
 
-export function createDevConfig(options) {
+export function createDevConfig(options = {}) {
   let baseConfig = createBaseConfig(options);
   return _.merge(baseConfig, {
     plugins: _.concat(baseConfig.plugins || [], [
@@ -121,7 +121,7 @@ export function createDevConfig(options) {
   });
 }
 
-export function createProdConfig(options) {
+export function createProdConfig(options = {}) {
   let baseConfig = createBaseConfig(options);
   return _.merge(baseConfig, {
     plugins: _.concat(baseConfig.plugins || [], [
@@ -163,7 +163,7 @@ export function createProdConfig(options) {
   });
 }
 
-export function createWatchConfig(options) {
+export function createWatchConfig(options = {}) {
   let baseConfig = createBaseConfig(options);
   return _.merge(baseConfig, {
     plugins: _.concat(baseConfig.plugins || [], [

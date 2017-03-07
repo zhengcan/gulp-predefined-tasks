@@ -22,7 +22,8 @@
   "scripts": {
     "build": "gulp",
     "watch": "gulp build:lib:js watch:lib:js",
-    "prepublish": "gulp build:lib:js"
+    "test:watch": "gulp test:watch",
+    "prepublish": "gulp clean && gulp build:lib:js"
   },
   "main": "lib/index.js",
   "directories": {
