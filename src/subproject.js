@@ -3,6 +3,7 @@ import path from 'path';
 import pump from 'pump';
 import gutil from 'gulp-util';
 import { exec } from 'child_process';
+import fs from 'fs';
 import { readPackageJson } from './package';
 
 function pipeWith(from, to, prefix) {
@@ -29,7 +30,12 @@ function pipeWith(from, to, prefix) {
 
 export default (gulp, options) => {
   gulp.task('with:deps', (cb) => {
-    let command = _.join(process.argv, ' ');
+    let command;
+    if (/^win/.test(process.platform)) {
+      command = _.join(_.map(process.argv, arg => '"' + arg + '"'), ' ');
+    } else {
+      command = _.join(process.argv, ' ');
+    }
     let packageJson = readPackageJson();
 
     let promises = _({})
@@ -37,8 +43,20 @@ export default (gulp, options) => {
       .map((value, name) => { return { name, value }; })
       .filter(d => _.startsWith(d.value, 'file:') || _.startsWith(d.value, 'link:'))
       .map(d => {
-        d.relativePath = d.value.substr('file:'.length);
-        d.absolutePath = path.join(process.cwd(), d.relativePath);
+        let [protocol, relativePath] = _.split(d.value, ':');
+        if (protocol === 'file') {
+          d.absolutePath = path.join(process.cwd(), relativePath);
+        } else { // link:
+          let pathInModules = path.join(process.cwd(), 'node_modules', d.name);
+          let stat = fs.lstatSync(pathInModules);
+          if (stat.isSymbolicLink()) {
+            // Use symbolic link
+            d.absolutePath = pathInModules;
+          } else {
+            // Find via value
+            d.absolutePath = path.join(process.cwd(), relativePath);
+          }
+        }
         return d;
       })
       .filter(d => {
