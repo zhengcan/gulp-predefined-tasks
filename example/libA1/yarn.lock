@@ -3201,8 +3201,8 @@ gulp-postcss@^6.3.0:
     vinyl-sourcemaps-apply "^0.2.1"
 
 gulp-predefined-tasks@alpha:
-  version "0.1.6-alpha.1"
-  resolved "https://registry.yarnpkg.com/gulp-predefined-tasks/-/gulp-predefined-tasks-0.1.6-alpha.1.tgz#9a5f941a13164dcf9665624ff73fc0850ceb1495"
+  version "0.1.7-alpha.1"
+  resolved "https://registry.yarnpkg.com/gulp-predefined-tasks/-/gulp-predefined-tasks-0.1.7-alpha.1.tgz#97658d1d95c548867be68c55691e0aff24669e29"
   dependencies:
     autoprefixer "^6.7.2"
     babel-eslint "^7.1.1"
