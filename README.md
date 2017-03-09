@@ -43,7 +43,7 @@ Please install `react-hot-loader@3.0.0-beta.6` if you want to use HMR with React
     "build": "gulp",
     "build:dev": "cross-env NODE_ENV=development gulp build:dev",
     "build:prod": "cross-env NODE_ENV=production gulp build:prod",
-    "build:watch": "cross-env NODE_ENV=development gulp build:watch",
+    "build:watch": "cross-env NODE_ENV=watch gulp build:watch",
     "clean": "gulp clean",
     "test": "gulp test",
     "test:watch": "gulp test:watch",
