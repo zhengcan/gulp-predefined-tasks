@@ -204,6 +204,13 @@ As default, it will concat any array values.
 - mode (String): The runtime mode: `dev`, `prod` or `watch`.
 - config (Object): The merged config object.
 
+## Extensions
+
+### Minimize images
+
+To support `gulp-imagemin`, we should add `gulp-imagemin` to `devDependencies`.
+To support `image-webpack-loader`, we should add `image-webpack-loader` to `devDependencies`.
+
 ## CLI arguments
 
 The following argument could be set via CLI.

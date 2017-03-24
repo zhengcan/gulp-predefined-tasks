@@ -7,7 +7,6 @@ import less from 'gulp-less';
 import postcss from 'gulp-postcss';
 import autoprefixer from 'autoprefixer';
 import cleanCSS from 'gulp-clean-css';
-import imagemin from 'gulp-imagemin';
 import rename from 'gulp-rename';
 
 import { JS_FILES, CSS_FILES, LESS_FILES, IMAGE_FILES, FONT_FILES } from './constant';
@@ -64,11 +63,19 @@ export default (gulp, options) => {
   ]);
 
   gulp.task('build:dist:image', (cb) => {
-    pump([
-      gulp.src(IMAGE_FILES),
-      imagemin(),
-      gulp.dest(distDir),
-    ], cb);
+    try {
+      let imagemin = require('gulp-imagemin');
+      pump([
+        gulp.src(IMAGE_FILES),
+        imagemin(),
+        gulp.dest(distDir),
+      ], cb);
+    } catch (e) {
+      pump([
+        gulp.src(IMAGE_FILES),
+        gulp.dest(distDir),
+      ], cb);
+    }
   });
 
   gulp.task('build:dist:font', (cb) => {

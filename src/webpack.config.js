@@ -46,6 +46,14 @@ function createBaseConfig(options) {
       }
     }
   };
+  let imageLoader = null;
+  try {
+    let imageWebpackLoader = require('image-webpack-loader');
+    let imageLoader = {
+      loader: 'image-webpack-loader',
+      options: DEFAULT_IMAGEMIN_OPTIONS
+    };
+  } catch (e) {}
 
   return {
     resolve: {
@@ -81,13 +89,10 @@ function createBaseConfig(options) {
         },
         {
           test: /\.(gif|png|jpe?g|svg)$/i,
-          use: [
+          use: _.compact([
             'url-loader',
-            {
-              loader: 'image-webpack-loader',
-              options: DEFAULT_IMAGEMIN_OPTIONS
-            }
-          ]
+            imageLoader,
+          ])
         },
         {
           test: /\.(eot|ttf|woff2?|svg)(\?.+)?$/,
