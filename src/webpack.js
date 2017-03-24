@@ -45,7 +45,7 @@ function rewriteEntryForHMR(prepend) {
   return (mode, entry) => {
     if (typeof entry === 'string') {
       return _.concat(prepend, entry);
-    } else if (typeof entry === 'array') {
+    } else if (_.isArray(entry)) {
       return _.concat(prepend, entry);
     } else {
       console.warn('Unknown entry value: ' + entry);
@@ -109,7 +109,7 @@ function prepareConfig(options, webpackOptions, mode, configFactory, rewriteEntr
   }
   if (rewriteEntry) {
     let entry = mergedConfig.entry;
-    if (typeof entry === 'string' || typeof entry === 'array') {
+    if (typeof entry === 'string' || _.isArray(entry)) {
       entry = rewriteEntry(mode, entry);
     } else if (typeof entry === 'object') {
       entry = _.mapValues(entry, e => rewriteEntry(mode, e));
