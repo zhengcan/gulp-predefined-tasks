@@ -120,7 +120,8 @@ export function createDevConfig(options = {}) {
       //   NODE_ENV: 'development',
       // }),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify('development')
+        'process.env.NODE_ENV': JSON.stringify('development'),
+        '__DEV__': 'true'
       }),
     ]),
   });
@@ -138,7 +139,8 @@ export function createProdConfig(options = {}) {
       //   NODE_ENV: 'production',
       // }),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify('production')
+        'process.env.NODE_ENV': JSON.stringify('production'),
+        '__DEV__': 'false'
       }),
   		new webpack.optimize.UglifyJsPlugin({
         beautify: false,
@@ -176,7 +178,8 @@ export function createWatchConfig(options = {}) {
       //   NODE_ENV: 'watch',
       // }),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify('watch')
+        'process.env.NODE_ENV': JSON.stringify('watch'),
+        '__DEV__': 'true'
       }),
       // enable webpack-dashboard
       // new DashboardPlugin(),
