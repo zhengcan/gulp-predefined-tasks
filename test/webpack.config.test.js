@@ -4,7 +4,7 @@ import { createDevConfig, createProdConfig, createWatchConfig } from '../src/web
 function baseTest(factory) {
   it('export function', () => {
     expect(factory).is.not.null;
-    expect(factory).is.function;
+    assert.isFunction(factory);
   });
 
   it('default config', () => {
