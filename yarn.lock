@@ -5052,7 +5052,7 @@ react-proxy@^3.0.0-alpha.0:
   dependencies:
     lodash "^4.6.1"
 
-react@^16.0.0:
+"react@^15.5.0 || ^16.0.0":
   version "16.0.0"
   resolved "http://r.tnpm.oa.com/react/download/react-16.0.0.tgz#ce7df8f1941b036f02b2cca9dbd0cb1f0e855e2d"
   dependencies:
